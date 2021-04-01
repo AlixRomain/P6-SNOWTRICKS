@@ -1,6 +1,15 @@
 {
+    "name": "Alix Romain/P6-SNOWTRICKS",
+    "version": "0.1.0",
+    "description": "Projet 6 - PHP/Symfony - Développeur d'application - OpenClassrooms",
     "type": "project",
-    "license": "proprietary",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alix",
+            "email": "romain.alix89@gmail.com"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
@@ -96,3 +105,4 @@
         }
     }
 }
+
