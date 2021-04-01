@@ -1,5 +1,5 @@
 {
-    "name": "Alix Romain/P6-SNOWTRICKS",
+    "name": "alixromain/p6-snowtricks",
     "version": "0.1.0",
     "description": "Projet 6 - PHP/Symfony - Développeur d'application - OpenClassrooms",
     "type": "project",
@@ -12,6 +12,7 @@
     ],
     "minimum-stability": "dev",
     "prefer-stable": true,
+
     "require": {
         "php": ">=7.2.5",
         "ext-ctype": "*",
