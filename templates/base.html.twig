@@ -12,16 +12,22 @@
         {% block stylesheets %}
             {#{{ encore_entry_link_tags('app') }}#}
         {% endblock %}
-        <link rel="shortcut icon" type="image/x-icon" href="../public/favicon.ico">
-        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-
-        {% block javascripts %}
-            {#{{ encore_entry_script_tags('app') }}#}
-        {% endblock %}
+        <link rel="stylesheet" href="{{ asset('asset/bootstrap/css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('asset/bootstrap/css/app.css') }}">
+        <link href="{{ asset('asset/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     </head>
+
     <body>
+
         {% include "layout/nav.html.twig" %}
-        {% block body %}{% endblock %}
+        {% block header %}{% endblock %}
+        {% block content %}{% endblock %}
+        {% include "layout/footer.html.twig" %}
+
+        <!-- Bootstrap core JavaScript and Jquerry -->
+        <script src="https://kit.fontawesome.com/1ed8546d64.js" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     </body>
+
 </html>

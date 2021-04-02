@@ -1,0 +1,27 @@
+.container-90{
+    width: 90%;
+    margin: auto;
+}
+header.masthead .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #212529;
+    opacity: .5;
+}
+
+header.masthead {
+    margin-bottom: 50px;
+    background: no-repeat center center;
+    background-color: #868e96;
+    background-attachment: scroll;
+    position: relative;
+    background-size: cover;
+}
+header.masthead .page-heading, header.masthead .site-heading {
+    text-align: center;
+    padding: 45vh 0;
+}
+
