@@ -35,7 +35,7 @@
                         <img class="img-fluid card-img-top" src="{{ asset(trick.Mainimage) }}" alt="{{ trick.name }}">
                         <div class="card-body">
                             <div class="card-link text-center">
-                                <a  class="btn btn-outline-primary mt-3 block" href="" >{{ trick.name }}</a>
+                                <a  class="btn btn-outline-primary mt-3 block" href="{{ path("tricks_show", {'slug' : trick.slug}) }}" >{{ trick.name }}</a>
                             </div>
                             <div class="card-link text-center">
                                 <span class="badge badge-pill badge-warning">{{ trick.category }}</span>
