@@ -15,11 +15,59 @@
                 </div>
             </div>
         </div>
+        <div class="container text-right" >
+            <a  id="down"  class="home-link-top" style="cursor: pointer" title="Aller en bas de la page">
+                <i style="z-index: 1000; position: relative" class="fas fa-chevron-down fa-3x chevron-down"></i>
+            </a>
+        </div>
     </header>
 {% endblock %}
 {% block content %}
 
-<div class="">
 
-</div>
+
+    <div class="container">
+
+        <div class="row" id="tricks-title">
+            {% for trick in tricks %}
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3 trick">
+                    <div class="card card-tricks mb-3 {% if loop.index > 8 %} hidden-tricks" style="display:none;"{% endif %}">
+                        <img class="img-fluid card-img-top" src="{{ asset(trick.Mainimage) }}" alt="{{ trick.name }}">
+                        <div class="card-body">
+                            <div class="card-link text-center">
+                                <a  class="btn btn-outline-primary mt-3 block" href="" >{{ trick.name }}</a>
+                            </div>
+                            <div class="card-link text-center">
+                                <span class="badge badge-pill badge-warning">{{ trick.category }}</span>
+                            </div>
+                            {% if app.user %}
+                                <div class="mt-1 text-center">
+                                    <a href="{{ path("tricks_update", {'slug' : trick.slug}) }}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ path("tricks_delete", {'slug' : trick.slug}) }}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="progress">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 75%;"></div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            <div class="btn btn-info" id="loadMoreTrick" >+</div>
+            <div class="btn btn-info" id="loadLessTrick" style="display:none" >-</div>
+        </div>
+        <div class="text-right">
+            <a id="up" class="home-link-bottom " title="Aller en haut de la page">
+                <i class="fas fa-chevron-up fa-3x chevron-up"></i>
+            </a>
+        </div>
+
+
+    </div>
 {% endblock %}
