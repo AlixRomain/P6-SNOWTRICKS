@@ -1,88 +1,55 @@
 {
   "cat": [
-  {
-      "catName": "Categorie Maîtresse",
+    {
+      "catName": "grabs",
       "types": [
         {
-          "catParent": 0,
-          "name": "Grabs",
-          "description": "Consiste à attraper la planche avec la main pendant le saut"
+          "catParent": "grabs",
+          "name": "Mute",
+          "description": "Saisie de la carre frontside de la planche entre les deux pieds avec la main avant"
         },
         {
-          "catParent": 0,
-          "name": "Rotations",
-          "description": "Le principe est d'effectuer une rotation horizontale pendant le saut, puis d'attérir en position switch ou normal"
+          "catParent": "grabs",
+          "name": "Sad",
+          "description": "Saisie de la carre backside de la planche, entre les deux pieds, avec la main avant"
         },
         {
-          "catParent": 0,
-          "name": "Flips",
-          "description": "Un flip est une rotation verticale"
+          "catParent": "grabs",
+          "name": "Indy",
+          "description": "Saisie de la carre frontside de la planche, entre les deux pieds, avec la main arrière"
         },
         {
-          "catParent": 0,
-          "name": "Slides",
-          "description": "Un slide consiste à glisser sur une barre de slide"
+          "catParent": "grabs",
+          "name": "Stalefish",
+          "description": "Saisie de la carre backside de la planche entre les deux pieds avec la main arrière"
         },
         {
-          "catParent": 0,
-          "name": "One foot tricks",
-          "description": "Figures réalisée avec un pied décroché de la fixation, afin de tendre la jambe correspondante pour mettre en évidence le fait que le pied n'est pas fixé"
+          "catParent": "grabs",
+          "name": "Tail grab",
+          "description": "Saisie de la partie arrière de la planche, avec la main arrière"
         },
         {
-          "catParent": 0,
-          "name": "Old school",
-          "description": "Le terme old school désigne un style de freestyle caractérisée par en ensemble de figure et une manière de réaliser des figures passée de mode, qui fait penser au freestyle des années 1980"
+          "catParent": "grabs",
+          "name": "Nose grab",
+          "description": "Saisie de la partie avant de la planche, avec la main avant"
         },
-      {
-        "catName": "grabs",
-        "types": [
-          {
-            "catParent": "grabs",
-            "name": "Mute",
-            "description": "Saisie de la carre frontside de la planche entre les deux pieds avec la main avant"
-          },
-          {
-            "catParent": "grabs",
-            "name": "Sad",
-            "description": "Saisie de la carre backside de la planche, entre les deux pieds, avec la main avant"
-          },
-          {
-            "catParent": "grabs",
-            "name": "Indy",
-            "description": "Saisie de la carre frontside de la planche, entre les deux pieds, avec la main arrière"
-          },
-          {
-            "catParent": "grabs",
-            "name": "Stalefish",
-            "description": "Saisie de la carre backside de la planche entre les deux pieds avec la main arrière"
-          },
-          {
-            "catParent": "grabs",
-            "name": "Tail grab",
-            "description": "Saisie de la partie arrière de la planche, avec la main arrière"
-          },
-          {
-            "catParent": "grabs",
-            "name": "Nose grab",
-            "description": "Saisie de la partie avant de la planche, avec la main avant"
-          },
-          {
-            "catParent": "grabs",
-            "name": "Japan",
-            "description": "Saisie de l'avant de la planche, avec la main avant, du côté de la carre frontside"
-          },
-          {
-            "catParent": "grabs",
-            "name": "Seat belt",
-            "description": "Saisie du carre frontside à l'arrière avec la main avant"
-          },
-          {
-            "catParent": "grabs",
-            "name": "Truck driver",
-            "description": "Saisie du carre avant et carre arrière avec chaque main (comme tenir un volant de voiture)"
-          }
-        ]
-      },
+        {
+          "catParent": "grabs",
+          "name": "Japan",
+          "description": "Saisie de l'avant de la planche, avec la main avant, du côté de la carre frontside"
+        },
+        {
+          "catParent": "grabs",
+          "name": "Seat belt",
+          "description": "Saisie du carre frontside à l'arrière avec la main avant"
+        },
+        {
+          "catParent": "grabs",
+          "name": "Truck driver",
+          "description": "Saisie du carre avant et carre arrière avec chaque main (comme tenir un volant de voiture)"
+        }
+      ]
+    },
     {
       "catName": "rotations",
       "types": [
@@ -177,7 +144,40 @@
           "description": "Semblable au One foot manual mais avec un flip 90 en plus"
         }
       ]
-    }
+    },
+    {
+      "catName": "Categorie Maîtresse",
+      "types": [
+        {
+          "catParent": 0,
+          "name": "Grabs",
+          "description": "Consiste à attraper la planche avec la main pendant le saut"
+        },
+        {
+          "catParent": 0,
+          "name": "Rotations",
+          "description": "Le principe est d'effectuer une rotation horizontale pendant le saut, puis d'attérir en position switch ou normal"
+        },
+        {
+          "catParent": 0,
+          "name": "Flips",
+          "description": "Un flip est une rotation verticale"
+        },
+        {
+          "catParent": 0,
+          "name": "Slides",
+          "description": "Un slide consiste à glisser sur une barre de slide"
+        },
+        {
+          "catParent": 0,
+          "name": "One foot tricks",
+          "description": "Figures réalisée avec un pied décroché de la fixation, afin de tendre la jambe correspondante pour mettre en évidence le fait que le pied n'est pas fixé"
+        },
+        {
+          "catParent": 0,
+          "name": "Old school",
+          "description": "Le terme old school désigne un style de freestyle caractérisée par en ensemble de figure et une manière de réaliser des figures passée de mode, qui fait penser au freestyle des années 1980"
+        }
       ]
     }
   ]
