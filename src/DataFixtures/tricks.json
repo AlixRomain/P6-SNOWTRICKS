@@ -1,0 +1,149 @@
+{
+  "cat": [
+    {
+      "catName": "grabs",
+      "types": [
+        {
+          "catParent": "grabs",
+          "name": "Mute",
+          "description": "Saisie de la carre frontside de la planche entre les deux pieds avec la main avant"
+        },
+        {
+          "catParent": "grabs",
+          "name": "Sad",
+          "description": "Saisie de la carre backside de la planche, entre les deux pieds, avec la main avant"
+        },
+        {
+          "catParent": "grabs",
+          "name": "Indy",
+          "description": "Saisie de la carre frontside de la planche, entre les deux pieds, avec la main arrière"
+        },
+        {
+          "catParent": "grabs",
+          "name": "Stalefish",
+          "description": "Saisie de la carre backside de la planche entre les deux pieds avec la main arrière"
+        },
+        {
+          "catParent": "grabs",
+          "name": "Tail grab",
+          "description": "Saisie de la partie arrière de la planche, avec la main arrière"
+        },
+        {
+          "catParent": "grabs",
+          "name": "Nose grab",
+          "description": "Saisie de la partie avant de la planche, avec la main avant"
+        },
+        {
+          "catParent": "grabs",
+          "name": "Japan",
+          "description": "Saisie de l'avant de la planche, avec la main avant, du côté de la carre frontside"
+        },
+        {
+          "catParent": "grabs",
+          "name": "Seat belt",
+          "description": "Saisie du carre frontside à l'arrière avec la main avant"
+        },
+        {
+          "catParent": "grabs",
+          "name": "Truck driver",
+          "description": "Saisie du carre avant et carre arrière avec chaque main (comme tenir un volant de voiture)"
+        }
+      ]
+    },
+    {
+      "catName": "rotations",
+      "types": [
+        {
+          "catParent": "rotations",
+          "name": "180",
+          "description": "Désigne un demi-tour, soit 180 degrés d'angle"
+        },
+        {
+          "catParent": "rotations",
+          "name": "360",
+          "description": "Trois six pour un tour complet"
+        },
+        {
+          "catParent": "rotations",
+          "name": "540",
+          "description": "Cinq quatre pour un tour et demi"
+        },
+        {
+          "catParent": "rotations",
+          "name": "720",
+          "description": "Sept deux pour deux tours complets"
+        },
+        {
+          "catParent": "rotations",
+          "name": "900",
+          "description": "Pour deux tours et demi"
+        },
+        {
+          "catParent": "rotations",
+          "name": "1080",
+          "description": "1080 ou big foot pour trois tours"
+        }
+      ]
+    },
+    {
+      "catName": "flips",
+      "types": [
+        {
+          "catParent": "flips",
+          "name": "Front flips",
+          "description": "Désigne un demi-tour, en avant"
+        },
+        {
+          "catParent": "flips",
+          "name": "Back flip",
+          "description": "Désigne un demi-tour, en arrière"
+        }
+      ]
+    },
+    {
+      "catName": "slides",
+      "types": [
+        {
+          "catParent": "slides",
+          "name": "Nose slide",
+          "description": "Slide à l'avant de la planche sur la barre"
+        },
+        {
+          "catParent": "slides",
+          "name": "Tail slide",
+          "description": "Slide à l'arrière de la planche sur la barre"
+        }
+      ]
+    },
+    {
+      "catName": "Old School",
+      "types": [
+        {
+          "catParent": "Old School",
+          "name": "Backside Aid",
+          "description": "Slide à l'avant de la planche sur la barre"
+        },
+        {
+          "catParent": "Old School",
+          "name": "Method Air",
+          "description": "Slide à l'arrière de la planche sur la barre"
+        }
+      ]
+    },
+    {
+      "catName": "One foot tricks",
+      "types": [
+        {
+          "catParent": "One foot tricks",
+          "name": "One foot manual",
+          "description": "Le One foot manual est un manual assez particulier puisqu'il consiste à rouler sur un pied et l'arrière du snow"
+        },
+        {
+          "catParent": "One foot tricks",
+          "name": "One footed flip",
+          "description": "Semblable au One foot manual mais avec un flip 90 en plus"
+        }
+      ]
+    }
+  ]
+}
