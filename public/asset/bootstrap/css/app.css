@@ -25,3 +25,33 @@ header.masthead .page-heading, header.masthead .site-heading {
     padding: 45vh 0;
 }
 
+.mouseHover, .mouseHoverShow{
+    display: none;
+}
+.hover, .hoverShow{
+    cursor: pointer;
+}
+.hover:hover > .mouseHover{
+    display: block;
+    background-color: #5c636a;
+    padding: 45px  5px 0px;
+    transition: 0.3s;
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: calc(100% - 143px);
+}
+
+.hoverShow:hover > .mouseHoverShow{
+    display: block;
+    background-color: #5c636a;
+    position: absolute;
+    padding: 10px;
+    z-index: 1000;
+    width:100%;
+    left: 0;
+
+}
+

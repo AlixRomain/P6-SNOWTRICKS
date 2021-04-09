@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
+use App\Repository\TricksRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Serializer\Serializer;
@@ -11,10 +12,13 @@ use Symfony\Component\Serializer\Serializer;
 class AppFixtures extends Fixture
 {
     private $repoCat;
+    private $repoTricks;
 
-    public function __construct(CategoryRepository $repoCat)
+    public function __construct(CategoryRepository $repoCat, TricksRepository $repoTricks)
     {
         $this->repoCat = $repoCat;
+        $this->repoTricks = $repoTricks;
+
     }
 
     public function load(ObjectManager $manager)
@@ -34,8 +38,6 @@ class AppFixtures extends Fixture
                 $manager->persist($categorie);
             }
         }
-
-
         $manager->flush();
     }
 }

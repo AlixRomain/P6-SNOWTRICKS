@@ -93,20 +93,20 @@ class Category
         return $this->tricks;
     }
 
-    public function addTrick(Tricks $trick): self
+    public function addTricks(Tricks $tricks): self
     {
-        if (!$this->tricks->contains($trick)) {
-            $this->tricks[] = $trick;
-            $trick->addCategory($this);
+        if (!$this->tricks->contains($tricks)) {
+            $this->tricks[] = $tricks;
+            $tricks->addCategory($this);
         }
 
         return $this;
     }
 
-    public function removeTrick(Tricks $trick): self
+    public function removeTricks(Tricks $tricks): self
     {
-        if ($this->tricks->removeElement($trick)) {
-            $trick->removeCategory($this);
+        if ($this->tricks->removeElement($tricks)) {
+            $tricks->removeCategory($this);
         }
 
         return $this;
