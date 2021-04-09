@@ -34,7 +34,7 @@ header.masthead .page-heading, header.masthead .site-heading {
 .hover:hover > .mouseHover{
     display: block;
     background-color: #5c636a;
-    padding: 45px  5px 0px;
+    padding: 45px  5px 0;
     transition: 0.3s;
     position: absolute;
     z-index: 1000;
