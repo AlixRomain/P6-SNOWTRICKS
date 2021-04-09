@@ -9,15 +9,26 @@
                 <div class="card mt-5">
                     <img class="display-top img-fluid" src="{{ asset(tricks.mainimage) }}" alt="{{ tricks.name }}-main">
                     <div class="card-body">
-                        <ul class="list-inline trick-data">
+                        <ul class="list-inline trick-data mb-5">
                             <li class="list-inline-item">
                                 Par : <a target="" {#href="{{ path('user_profile', {'id' : tricks.authorid} ) }}">{{ tricks.author.fullName }}#}></a>
                             </li> |
-                            <li class="list-inline-item">
+                            <li class="list-inline-item mr-3">
                                 Ajouté le {{ tricks.createdAt | date('d/m/Y') }}  {#{% if tricks.updatedAt is not null %}(<small>Mise à jour le : {{ tricks.updatedAt | date('d/m/Y') }}#} </small>){#{% endif %}#}
-                            </li> |
-                            <li class="list-inline-item">
-                                Catégorie : {{ tricks.category }}
+                            </li>
+                            <li class="list-inline-item ">
+                                <div class="row">
+                                    Catégorie :
+                                    {% for cat in tricks.category %}
+                                        <div class="ml-2 hoverShow">
+                                     <span class="badge badge-pill badge-warning mr-2">
+                                    {{ cat.name}}
+                                     </span>
+                                            <p class="text-warning mouseHoverShow"> {{ cat.description}}</p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
                             </li> |
                             <li class="list-inline-item">
                                 <a href="#comments-block">{#{{ pagination.getAll() | length }}#} commentaires</a>
