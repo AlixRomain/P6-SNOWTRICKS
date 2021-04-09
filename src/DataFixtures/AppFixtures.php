@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Media;
 use App\Entity\Tricks;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
@@ -73,7 +74,6 @@ class AppFixtures extends Fixture
             /// "adherentX" est associé à l'objet $adherentX
             $this->addReference("adherent".$i, $adherent);
             $manager->persist($adherent);
-
             //Création de 20 tricks associé à un adhérent
                 $allCategorie = $this->repoCat->findAll();
                 $author = $this->faker->numberBetween(1,20);
@@ -88,7 +88,22 @@ class AppFixtures extends Fixture
                 $this->addReference("tricks".$i, $trick);
                 $manager->persist($trick);
 
-            //Association
+            //Association d'une ou 4 image et d'une ou 4 vidéos à un tricks---------------------------------------------
+            for($m = 0; $m < 4; $m++) {
+                $img = new Media();
+                $img->setName($this->faker->sentence(2))
+                    ->setPath('asset/media/img/snow_' . $this->faker->numberBetween(1, 22) . '.jpg')
+                    ->setTricks($trick)
+                    ->setType('img');
+                $manager->persist($img);
+
+                $video = new Media();
+                $video->setName($this->faker->sentence(2))
+                    ->setPath($tr["video"][$this->faker->numberBetween(0, 9)]["name"])
+                    ->setTricks($trick)
+                    ->setType('video');
+                $manager->persist($video);
+            }
         }
                  $adherentAdmin = new User();
                  $roleAdmin[]= USER::ROLE_ADMIN;
