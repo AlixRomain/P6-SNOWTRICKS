@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Repository\CategoryRepository;
 use App\Repository\TricksRepository;
 use App\Repository\UserRepository;
+use Cocur\Slugify\Slugify;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -19,6 +20,8 @@ class AppFixtures extends Fixture
     private $faker;
     private $passwordEncoder;
     private $repoUser;
+    private $slug;
+
     public function __construct(UserRepository $repoUser, CategoryRepository $repoCat, TricksRepository $repoTricks, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->repoCat = $repoCat;
@@ -26,6 +29,7 @@ class AppFixtures extends Fixture
         $this->repoTricks = $repoTricks;
         $this->faker = Factory::create("fr_FR");
         $this->passwordEncoder = $passwordEncoder;
+        $this->slug =  new Slugify();
     }
 
     public function load(ObjectManager $manager)
@@ -53,10 +57,10 @@ class AppFixtures extends Fixture
                     ->setFname($this->faker->firstName($genre=mt_rand(0,1)))
                     ->setRoles($roleUser)
                     ->setRgpd(1)
-                    ->setAvatar($this->faker->title)
+                    ->setAvatar()
                     ->setDateCreate($this->faker->dateTimeInInterval( '-2 years', 'now'))
-                    ->setDevise()
-                    ->setSlug()
+                    ->setDevise($this->faker->title)
+                    ->setSlug($this->slug->slugify(strtolower($adherent->getFname().$adherent->getLname())))
                     ->setEmail(strtolower($adherent->getFname())."@gmail.com")
                     ->setPassword($this->passwordEncoder->encodePassword($adherent,$adherent->getFname()));
                 //La méthode permet d'attribuer une ckef/réference à chaque valeur/objet.
