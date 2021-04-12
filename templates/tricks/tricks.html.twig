@@ -33,7 +33,7 @@
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3 trick">
                     <div class="card card-tricks mb-3 {% if loop.index > 8 %} hidden-tricks" style="display:none;"{% endif %}">
                      <a  href="{{ path("tricks_show", {'slug' : trick.slug}) }}" >
-                        <img class="img-fluid card-img-top" src="{{ asset(trick.Mainimage) }}" alt="{{ trick.name }}">
+                        <img class="img-fluid card-img-top" style="min-height: 168px" src="{{ asset(trick.Mainimage) }}" alt="{{ trick.name }}">
                     </a>
                         <div class="card-body">
                             <div class="card-link text-center mb-3">
@@ -41,20 +41,20 @@
                             </div>
                             <div class="card-link text-center row">
                                  {% for cat in trick.category %}
-                                 <div class="hover ">
+                                 <div class="{% if app.user %}hoverAuth{% else %} hover {% endif %} ">
                                      <span class="badge badge-pill badge-warning mr-3">
                                     {{ cat.name}}
                                      </span>
-                                     <p class="text-warning mouseHover"> {{ cat.description}}</p>
+                                     <p class="text-warning mouseHover mouseHoverAuth"><strong>{{ cat.description}}</strong></p>
                                  </div>
                                    {% endfor %}
                             </div>
                             {% if app.user %}
-                                <div class="mt-1 text-center">
-                                    <a href="{{ path("tricks_update", {'slug' : trick.slug}) }}">
+                                <div class="mt-3 text-center row">
+                                    <a class="col m-auto btn-block hoverGris" href="{{ path("tricks_update", {'slug' : trick.slug}) }}" title="Modifier ce tricks" >
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <a href="{{ path("tricks_delete", {'slug' : trick.slug}) }}">
+                                    <a class="col m-auto  btn-block hoverGris" href="{{ path("tricks_delete", {'slug' : trick.slug})}}"  title="Supprimer ce tricks">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </div>

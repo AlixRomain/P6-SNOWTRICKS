@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
+use App\Entity\Comment;
 use App\Entity\Media;
 use App\Entity\Tricks;
 use App\Entity\User;
@@ -105,6 +106,7 @@ class AppFixtures extends Fixture
                 $manager->persist($video);
             }
         }
+
                  $adherentAdmin = new User();
                  $roleAdmin[]= USER::ROLE_ADMIN;
                  $adherentAdmin      ->setLname("Alix")
@@ -120,6 +122,30 @@ class AppFixtures extends Fixture
               $manager->persist($adherentAdmin);
 
               $manager->flush();
+
+        $allAdherent = $this->repoUser->findAll();
+        $alltricks  = $this->repoTricks->findAll();
+
+
+        foreach ($allAdherent as $adherent){
+            for($m = 0; $m < 4; $m++) {
+            //Association d'un commentaires  à un tricks---------------------------------------------
+            $comment = new Comment();
+            $comment->setAuthor($adherent)
+                ->setTricks($alltricks[$this->faker->numberBetween(0,19)])
+                ->setContent($this->faker->realText(100))
+                ->setDateCreate($this->faker->dateTimeInInterval( '-2 years', 'now'));
+            $manager->persist($comment);
+            }
+        }
+
+        $allCategorie = $this->repoCat->findAll();
+        foreach ($alltricks as $tricks){
+                //Association d'une catégorie supplémentaire à un tricks---------------------------------------------
+             $tricks->addCategory($allCategorie[$this->faker->numberBetween(0,19)]);
+             $manager->persist($tricks);
+        }
+        $manager->flush();
     }
 }
 
