@@ -5,7 +5,10 @@ namespace App\Controller;
 use App\Entity\Tricks;
 use App\Repository\TricksRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -42,9 +45,48 @@ class TricksController extends AbstractController
      *
      * @return Response
      */
-    public function show($slug): Response
+    public function show($slug, Request $request ): Response
     {
         $tricks = $this->entityManager->getRepository(Tricks::class)->findOneBySlug($slug);
+
+
+        return $this->render('tricks/show.html.twig', [
+            'tricks' => $tricks,
+            'form'=>'rien'
+
+        ]);
+    }
+    /**
+     * @Route("/snowtricks/{slug}", name="tricks_update")
+     * @param                     $slug
+     *
+     * @IsGranted("ROLE_USER")
+     *
+     * @return Response
+     */
+    public function update($slug, Request $request ): Response
+    {
+        $tricks = $this->entityManager->getRepository(Tricks::class)->findOneBySlug($slug);
+
+
+        return $this->render('tricks/show.html.twig', [
+            'tricks' => $tricks,
+            'pagination'=>'rien'
+        ]);
+    }
+    /**
+     * @Route("/snowtricks/{slug}", name="tricks_delete")
+     * @param                     $slug
+     *
+     * @IsGranted("ROLE_USER")
+     *
+     * @return Response
+     */
+    public function delete($slug, Request $request ): Response
+    {
+        $tricks = $this->entityManager->getRepository(Tricks::class)->findOneBySlug($slug);
+
+
         return $this->render('tricks/show.html.twig', [
             'tricks' => $tricks,
             'pagination'=>'rien'
