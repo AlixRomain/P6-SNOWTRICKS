@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Tricks;
+use App\Form\TricksUpdateType;
+use App\Repository\CategoryRepository;
 use App\Repository\TricksRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -57,21 +59,49 @@ class TricksController extends AbstractController
         ]);
     }
     /**
-     * @Route("/snowtricks/{slug}", name="tricks_update")
+     * @Route("/modifier-tricks/{slug}", name="tricks_update")
      * @param                     $slug
      *
      * @IsGranted("ROLE_USER")
      *
      * @return Response
      */
-    public function update($slug, Request $request ): Response
+    public function update($slug, Request $request, CategoryRepository $repoCat ): Response
     {
+        $categorie = $repoCat->findAll();
         $tricks = $this->entityManager->getRepository(Tricks::class)->findOneBySlug($slug);
+        $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
 
-
-        return $this->render('tricks/show.html.twig', [
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+           dump($form->getData());
+           dd($form->get('category')->getData());
+        }
+        return $this->render('tricks/update.html.twig', [
             'tricks' => $tricks,
-            'pagination'=>'rien'
+            'form'=>$form->createView()
+        ]);
+    }
+    /**
+     * @Route("/ajouter-tricks", name="tricks_add")
+     *
+     * @IsGranted("ROLE_USER")
+     *
+     * @return Response
+     */
+    public function add( Request $request, CategoryRepository $repoCat ): Response
+    {
+        $categorie = $repoCat->findAll();
+        $tricks = new Tricks();
+        $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+           dump($form->getData());
+           dd($form->get('category')->getData());
+        }
+        return $this->render('tricks/add.html.twig', [
+            'form'=>$form->createView()
         ]);
     }
     /**

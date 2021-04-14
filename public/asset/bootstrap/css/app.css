@@ -11,6 +11,9 @@ header.masthead .overlay {
     background-color: #212529;
     opacity: .5;
 }
+.apoper, .popover{
+    max-width: 800px;
+}
 
 header.masthead {
     margin-bottom: 50px;

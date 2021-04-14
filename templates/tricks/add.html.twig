@@ -1,0 +1,72 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Modification d'un trick{% endblock %}
+
+{% form_theme form _self %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-5">Modifier un Tricks</h1>
+    {{ form_start(form) }}
+    <div class="row ">
+        <div class="col "> <h3 class="mb-5">Image principale</h3>{{ form_row(form.main_image) }}</div>
+    </div>
+
+    <div class="row text-center">
+        <div class="col">
+            <div class="p-3 mb-2 bg-light">
+                <div class="row justify-content-between">
+                    <div class="col-md-6  align-items-center"> {{ form_row(form.name) }}</div>
+                    <div class="col-md-6">{{ form_row(form.description) }}</div>
+                </div>
+
+                <div class="row justify-content-between">
+                    <div class="col">{{ form_row(form.category) }}</div>
+                </div>
+                <hr>
+                <div class="form-row">
+                    <div class="form-group col-md-6 text-center">
+                        <p>Cliquez pour ajouter une image</p>
+                        {{ form_widget(form.media) }}
+                        <input type="hidden" id="image-counter" value="0">
+                        <div class="form-group mt-2">
+                            <button type="button" class="btn btn-outline-info" id="add-image">Ajouter une image</button>
+                            <span class="counter-image text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6 text-center">
+                        <p>Cliquez pour ajouter une video
+                            <span data-toggle="popover" class="apoper " title="Type de video " data-placement="left" data-content="And here's some amazing content. It's very engaging. Right?"> ?
+                            </span>
+                        </p>
+                                            {{ form_widget(form.video) }}
+                        <input type="hidden" id="video-counter" value="0">
+                        <div class="form-group mt-2">
+                            <button type="button" class="btn btn-outline-info" id="add-video">Ajouter une video</button>
+                            <span class="counter-video text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <button type="submit" class="btn btn-success">Ajoute ce tricks</button>
+            </div>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+    {% endblock %}
+
+    {% block _tricks_update_image_entry_widget %}
+    <div class="row block-image"  id="block_{{id}}">
+        <div class="col-md-6 offset-md-2">
+            <div class="form-group">
+                {{ form_errors(form.media) }}
+                {{ form_widget(form.media) }}
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" data-action="delete" data-target="#block_{{id}}" class="btn btn-white btn-trick"><i class="material-icons text-danger">clear</i></button>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+{% endblock %}

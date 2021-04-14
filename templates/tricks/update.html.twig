@@ -1,0 +1,120 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Modification d'un trick{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="text-center mb-5">Modifier un Tricks</h1>
+
+        {{ form_start(form) }}
+        <div class="row ">
+                <div class="col "> <img src="{{ asset(tricks.mainImage) }}" class="  " style="width: 100%;" alt="Image de couverture de {{ tricks.name }}"></div>
+                <div class="col "> <h3 class="mb-5">Image principale</h3>{{ form_row(form.main_image) }}</div>
+        </div>
+
+        <div class="row text-center">
+            <div class="col">
+                <div class="p-3 mb-2 bg-light">
+                    <div class="row justify-content-between">
+                        <div class="col-md-6  align-items-center"> {{ form_row(form.name) }}</div>
+                        <div class="col-md-6">{{ form_row(form.description) }}</div>
+                    </div>
+
+                    <div class="row justify-content-between">
+                        <div class="col">{{ form_row(form.category) }}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="load-media d-none d-lg-block">
+                            <div  class="form-row">
+                                <div id="trick_images" class="form-group col-md-12 text-center">
+                                    <p class="collection-head first">Cliquez pour ajouter, supprimer ou modifier une image</p>
+                                    {{ form_widget(form.media, { 'attr': {'class': 'fieldCounter'} }) }}
+                                    <input type="hidden" id="image-counter" value="0">
+                                    <div class="form-group mt-2 pb-2">
+                                        <button type="button" class="btn btn-outline-info trick" id="add-image">Ajouter une image</button>
+                                        <span class="counter-image text-danger"></span>
+                                    </div>
+                                    <hr>
+                                </div>
+                            </div>
+
+                    </div>
+
+                    {% if tricks.mainImage is not empty %}
+                        <hr>
+                        <h3>Liste des images</h3>
+                        <div class="row p-3">
+                            {% for image in tricks.media %}
+                                <div class="d-flex flex-column p-3 align-items-center">
+                                    <img src="{{ asset(image.path) }}" class="tricks add-tricks img-fluid" id="deleteMedia_{{ image.id }}" alt="Image de {{ tricks.name }}">
+                                    <a id="deleteMedia_{{ image.id }}" href=""><i class="fas fa-trash-alt fa-1x"></i></a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+
+                    {% if tricks.media is not empty %}
+                        <hr>
+                        <h3>Liste des vidéos</h3>
+                        <div class="row p-5">
+                            {% for video in tricks.media %}
+                                <div class="d-flex flex-column p-3 justify-content-around">
+                                    <iframe width="420" height="315" src="{{ video.path }}" allowfullscreen="" id="deleteMediaVideo_"></iframe>
+                                    <a id="deleteMediaVideo_{{ video.id }}" href=""><i class="fas fa-trash-alt"></i></a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+
+
+                </div>
+                <button type="submit" class="btn btn-success">Modifier le tricks</button>
+            </div>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block _trick_update_media_entry_widget %}
+    <div class="row block-image"  id="block_{{id}}">
+        <div class="col-md-8 offset-md-2">
+            {% if form.vars.data.name is defined %}
+                <img src="/images/{{form.vars.data.name}}" alt="trick-image-{{form.vars.name}}" class="img-trick">
+            {% endif %}
+        </div>
+        <div class="col-md-6 offset-md-2">
+            <div class="form-group">
+                {{ form_errors(form.image) }}
+                {{ form_widget(form.image) }}
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" data-action="delete" data-target="#block_{{id}}" class="btn btn-secondary btn-trick"><i class="material-icons text-danger">clear</i></button>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+{% endblock %}
+
+{% block _trick_videos_entry_widget %}
+    <div class="row" id="block_{{id}}">
+        <div class="col-md-8 offset-md-2">
+            {% if form.vars.data.url is defined %}
+                <iframe src="{{ form.vars.data.url }}" class="iframe-trick" allowfullscreen></iframe>
+            {% endif %}
+        </div>
+        <div class="col-md-6 offset-md-2">
+            <div class="form-group">
+                {{ form_errors(form.url) }}
+                {{ form_widget(form.url) }}
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" data-action="delete" data-target="#block_{{id}}" class="btn btn-secondary btn-trick"><i class="material-icons text-danger">clear</i></button>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+{% endblock %}
