@@ -16,7 +16,6 @@ class ImageType extends AbstractType
         $builder
             ->add('path', FileType::class, [
                 'label' => false,
-                'data_class' => null,
                 'attr' => [
                     'placeholder' => 'Votre image',
                     'class' => 'img-trick'

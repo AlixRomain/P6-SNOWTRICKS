@@ -42,7 +42,7 @@ class TricksUpdateType extends AbstractType
             ])
             ->add('main_image', FileType::class, [
                 'label' => false,
-                'required' => false,
+                'required' => true,
                 'data_class' => null,
                 'attr' => [
                     'placeholder' => 'Ajouter ou modifier l\'image principale du tricks',

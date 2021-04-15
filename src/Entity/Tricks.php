@@ -63,7 +63,7 @@ class Tricks
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="tricks")
+     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="tricks",cascade={"persist"})
      */
     private $media;
 
