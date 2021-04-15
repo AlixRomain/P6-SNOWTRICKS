@@ -31,7 +31,7 @@ class TricksUpdateType extends AbstractType
                 'label' => 'Nom du tricks',
                 'attr' => [
                     'placeholder' => 'Titre du tricks',
-                    'class' => ''
+                    'rows' => 3
                 ],
             ])
             ->add('description', TextareaType::class, [
@@ -41,7 +41,7 @@ class TricksUpdateType extends AbstractType
                 ],
             ])
             ->add('main_image', FileType::class, [
-                'label' => ' ',
+                'label' => false,
                 'required' => false,
                 'data_class' => null,
                 'attr' => [
@@ -57,18 +57,19 @@ class TricksUpdateType extends AbstractType
                         ->where('c.category_parent != :toto')
                         ->setParameter('toto', '0');
                 },
-                'label'     => 'Sélectionnez jusqu\'à trois catégories pour ce Tricks',
-                'multiple'  => true,
+                'label'     => false,
+                'multiple'  => 3,
+                'attr' => ['class' => 'minHeightSelect'],
                 'group_by' => function($choice, $key, $value) {
                     return ucfirst($choice->getCategoryParent()) ;
                 }
-
             ])
+
             ->add('media', CollectionType::class, [
                 'required' => false,
                 'entry_type' => ImageType::class,
                 'entry_options' => ['label' => false],
-                'block_name' => 'image' ,
+                'block_name' => 'image',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,

@@ -14,12 +14,12 @@ class ImageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('media', FileType::class, [
-                'mapped' => false,
+            ->add('path', FileType::class, [
                 'label' => false,
                 'data_class' => null,
                 'attr' => [
-                    'placeholder' => 'Insérer une image',
+                    'placeholder' => 'Votre image',
+                    'class' => 'img-trick'
                 ],
             ]);
     }
