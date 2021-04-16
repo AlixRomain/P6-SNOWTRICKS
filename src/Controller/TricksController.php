@@ -104,32 +104,47 @@ class TricksController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
-            /*Gestion de l'upload du main_image'*/
+            /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('main_image')->getData();
             if(isset($main_file)){
+                /*Change path before move file in media directory*/
                 $newPath = 'asset/media/main/'.$main_file->getBasename();
                 $tricks->setMainImage($newPath);
                 try {
-                  /*  $main_file->move(
+                    $main_file->move(
                         $this->getParameter('img_main_directory'),
                         $newPath
-                    );*/
-                    throw new FileException( 'coucou' );
+                    );
+                    throw new FileException( 'Echec lors du déplacement du fichier.' );
                 } catch (FileException $e) {
-                    dd($e->getMessage());
-                    $this->addFlash('success', 'Echec de l\'upload du fichier!');
+
+                    $this->addFlash('success', '$e->getMessage()');
                 }
             }
-                foreach ($tricks->getMedia() as $image) {
-                    $oldPath = $image->getPath();
-                    $newPath = 'asset/media/img/' . substr($image->getPath(), -11, 11);
-                    $image->setType('img');
-                    $image->setPath($newPath);
-                    $image->setName('Tricks de snowtricks ');
-                    move_uploaded_file( $oldPath, $this->getParameter('kernel.project_dir').'/public/'. $newPath);
-                }
+            /*Gestion de l'upload des images'*/
+            foreach ($tricks->getMedia() as $image) {
+                $oldPath = $image->getPath();
+                $newPath = 'asset/media/img/' . substr($image->getPath(), -11, 11);
+                $image->setType('img');
+                $image->setPath($newPath);
+                $image->setName('Tricks de snowtricks ');
+                /*Déplacement des images dans fichier media'*/
+                move_uploaded_file( $oldPath, $this->getParameter('kernel.project_dir').'/public/'. $newPath);
+            }
 
-
+            /*Gestion de l'upload des videos'*/
+            $pathRootVideo = 'https://www.youtube.com/embed/';
+            $video  = $form->get('video')->getData();
+            $goodPath = [];
+            foreach ($video as $src){
+                $src->setTricks($tricks);
+                $src->setType('video');
+                $src->setName('Une video youtube partenaire de Snowtricks');
+                parse_str( parse_url( $src->getPath(), PHP_URL_QUERY ), $goodPath );
+                $src->setPath($pathRootVideo.$goodPath['v']);
+                $tricks->addMedium($src);
+            }
+            /*Hydration of tricks with form data*/
             $tricks->setAuthorId($this->getUser());
             $tricks->setCreatedAt(new \DateTime());
             $tricks->setSlug($this->slugify->slugify(strtolower($tricks->getName())));
@@ -137,7 +152,6 @@ class TricksController extends AbstractController
             $this->em->flush();
             $this->addFlash('success', 'Votre trick a été ajouté avec succés !');
             return $this->redirectToRoute('tricks_add');
-
         }
         return $this->render('tricks/add.html.twig', [
             'form'=>$form->createView()
