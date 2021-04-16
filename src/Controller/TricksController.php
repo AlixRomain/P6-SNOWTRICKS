@@ -103,7 +103,6 @@ class TricksController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('main_image')->getData();
             if(isset($main_file)){
@@ -121,6 +120,7 @@ class TricksController extends AbstractController
                     $this->addFlash('success', '$e->getMessage()');
                 }
             }
+
             /*Gestion de l'upload des images'*/
             foreach ($tricks->getMedia() as $image) {
                 $oldPath = $image->getPath();
@@ -134,15 +134,13 @@ class TricksController extends AbstractController
 
             /*Gestion de l'upload des videos'*/
             $pathRootVideo = 'https://www.youtube.com/embed/';
-            $video  = $form->get('video')->getData();
             $goodPath = [];
-            foreach ($video as $src){
-                $src->setTricks($tricks);
-                $src->setType('video');
-                $src->setName('Une video youtube partenaire de Snowtricks');
-                parse_str( parse_url( $src->getPath(), PHP_URL_QUERY ), $goodPath );
-                $src->setPath($pathRootVideo.$goodPath['v']);
-                $tricks->addMedium($src);
+            foreach ($tricks->getVideos() as $video){
+                $video->setTricks($tricks);
+                $video->setType('video');
+                $video->setName('Une video youtube partenaire de Snowtricks');
+                parse_str( parse_url( $video->getPath(), PHP_URL_QUERY ), $goodPath );
+                $video->setPath($pathRootVideo.$goodPath['v']);
             }
             /*Hydration of tricks with form data*/
             $tricks->setAuthorId($this->getUser());

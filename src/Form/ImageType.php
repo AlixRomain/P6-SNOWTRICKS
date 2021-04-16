@@ -16,6 +16,7 @@ class ImageType extends AbstractType
         $builder
             ->add('path', FileType::class, [
                 'label' => false,
+                'data_class' => null,
                 'attr' => [
                     'placeholder' => 'Votre image',
                     'class' => 'img-trick'
@@ -26,13 +27,8 @@ class ImageType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-                                   'data_class' => Media::class,
-                                   /*'query_builder' => function (EntityRepository $repo) {
-                                       return $repo->createQueryBuilder('m')
-                                           ->where('m.type == :toto')
-                                           ->setParameter('toto', 'img');
-                                   }*/
-                               ]);
+                               'data_class' => Media::class
+                           ]);
     }
 }
 

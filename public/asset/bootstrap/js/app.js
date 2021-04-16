@@ -124,7 +124,7 @@ $(function() {
       $("#barImage").css({'width': 0,})
     }
 
-    const countVideo = +$("#tricks_update_video div.form-group").length;
+    const countVideo = +$("#tricks_update_videos div.form-group").length;
     if (countVideo >= 4) {
       $("#add-video").hide();
     } else {
@@ -164,7 +164,7 @@ $(function() {
   }
 
   function updateCounterVideo() {
-    const count = +$("#tricks_update_video div.form-group").length;
+    const count = +$("#tricks_update_videos div.form-group").length;
     $("#video-counter").val(count);
   }
 
@@ -188,8 +188,8 @@ $(function() {
   });
   $("#add-video").click(function () {
     const index = +$("#video-counter").val();
-    const tmpl = $("#tricks_update_video").data("prototype").replace(/__name__/g, index);
-    $("#tricks_update_video").append(tmpl);
+    const tmpl = $("#tricks_update_videos").data("prototype").replace(/__name__/g, index);
+    $("#tricks_update_videos").append(tmpl);
     $("#video-counter").val(index + 1);
     handleDeleteButtons();
     displayCounter();

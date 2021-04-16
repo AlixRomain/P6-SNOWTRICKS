@@ -50,11 +50,9 @@
                                  </ol>
                                  <div class="carousel-inner enlarge">
                                      {% for img in tricks.media %}
-                                         {% if img.type =='img' %}
                                          <div class="carousel-item{% if loop.index == 1 %} active {% endif %}">
                                              <img class="d-block mediaSize" src="{{ asset(img.path) }}" alt="{{ asset(img.name) }}">
                                          </div>
-                                         {% endif %}
                                      {% endfor %}
                                  </div>
                                     <a class="carousel-control-prev" href="#carousel_image" data-slide="prev">
@@ -68,19 +66,15 @@
                             <div class="col-lg-6 col-md-12">
                                 <div id="carousel-v" class="carousel slide mt-3 mb-2" data-ride="carousel">
                                     <ol class="carousel-indicators">
-                                        {% for video in tricks.media %}
-                                            {% if video.type =='video' %}
+                                        {% for video in tricks.videos %}
                                                 <li data-target=".carousel"  data-slide-to="{{ loop.index - 1 }}"  {% if loop.index != 0 %}class="active" {% endif %}></li>
-                                            {% endif %}
                                         {% endfor %}
                                     </ol>
                                     <div class="carousel-inner toto ">
-                                        {% for video in tricks.media %}
-                                            {% if video.type =='video' %}
+                                        {% for video in tricks.videos %}
                                                 <div class="carousel-item {% if loop.last %} active {% endif %}">
                                                     <iframe class="mediaSize" src="{{ asset(video.path) }}" title="YouTube video player"  allowfullscreen></iframe>
                                                 </div>
-                                            {% endif %}
                                         {% endfor %}
                                     </div>
                                     <a class="carousel-control-prev" href="#carousel-v" data-slide="prev">

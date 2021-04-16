@@ -7,6 +7,7 @@ use App\Entity\Comment;
 use App\Entity\Media;
 use App\Entity\Tricks;
 use App\Entity\User;
+use App\Entity\Video;
 use App\Repository\CategoryRepository;
 use App\Repository\TricksRepository;
 use App\Repository\UserRepository;
@@ -98,7 +99,7 @@ class AppFixtures extends Fixture
                     ->setType('img');
                 $manager->persist($img);
 
-                $video = new Media();
+                $video = new Video();
                 $video->setName($this->faker->sentence(2))
                     ->setPath($tr["video"][$this->faker->numberBetween(0, 9)]["name"])
                     ->setTricks($trick)

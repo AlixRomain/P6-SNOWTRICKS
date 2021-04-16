@@ -65,7 +65,7 @@ class TricksUpdateType extends AbstractType
                 }
             ])
 
-            ->add('media', CollectionType::class, [
+           ->add('media', CollectionType::class, [
                 'required' => false,
                 'entry_type' => ImageType::class,
                 'entry_options' => ['label' => false],
@@ -73,17 +73,15 @@ class TricksUpdateType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
-
             ])
-            ->add('video', CollectionType::class, [
-            'mapped'=>false,
+
+            ->add('videos', CollectionType::class, [
             'required' => false,
             'entry_type' => VideoType::class,
             'entry_options' => ['label' => false],
             'allow_add' => true,
             'allow_delete' => true,
             'by_reference' => false,
-
         ]);
 
 

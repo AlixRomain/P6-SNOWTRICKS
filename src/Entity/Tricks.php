@@ -72,11 +72,17 @@ class Tricks
      */
     private $comments;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="tricks",cascade={"persist"})
+     */
+    private $videos;
+
     public function __construct()
     {
         $this->category = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -246,6 +252,36 @@ class Tricks
             // set the owning side to null (unless already changed)
             if ($comment->getTricks() === $this) {
                 $comment->setTricks(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
+            $video->setTricks($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->videos->removeElement($video)) {
+            // set the owning side to null (unless already changed)
+            if ($video->getTricks() === $this) {
+                $video->setTricks(null);
             }
         }
 
