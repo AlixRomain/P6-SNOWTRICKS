@@ -76,7 +76,25 @@ $(function() {
   /* --------------------------------------------------------------------------------- */
 
   $(document).on('change', '.custom-file-input', function(event){
-    $(this).next('.custom-file-label').html(event.target.files[0].name); })
+    $(this).next('.custom-file-label').html(event.target.files[0].name);
+  })
+  $(document).on('change', '#tricks_update_main_image', function(event){
+    $('#mainImage').hide();
+    scrollTo( $('#titre'));
+
+  })
+
+  /* --------------------------------------------------------------------------------- */
+
+  /*  /* Get alt and replace placeholder with it */
+
+  /* --------------------------------------------------------------------------------- */
+  var i = 0;
+  $(".img-trick").each(function () {
+    var alt = $(this).attr("alt");
+    $("label[for=trick_images_" + i + "_image]").text(alt);
+    i++;
+  });
 
   /* --------------------------------------------------------------------------------- */
 
@@ -132,7 +150,6 @@ $(function() {
     }
 
     if (countVideo) {
-      console.log(countVideo);
       const progress = countVideo * 25
       $("#barVideo").css({'width': progress +'%',
       })

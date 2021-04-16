@@ -2,9 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Media;
 use App\Entity\Tricks;
 use App\Form\TricksUpdateType;
 use App\Repository\CategoryRepository;
+use App\Repository\MediaRepository;
 use App\Repository\TricksRepository;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
@@ -46,16 +48,16 @@ class TricksController extends AbstractController
     }
 
     /**
-     * @Route("/snowtricks/{slug}", name="tricks_show")
-     * @param                     $slug
+     * @Route("/snowtricks/{id}", name="tricks_show")
+     * @param                     $id
      *
      * @param SerializerInterface $serializer
      *
      * @return Response
      */
-    public function show($slug, Request $request ): Response
+    public function show($id, Request $request ): Response
     {
-        $tricks = $this->em->getRepository(Tricks::class)->findOneBySlug($slug);
+        $tricks = $this->em->getRepository(Tricks::class)->findOneById($id);
 
 
         return $this->render('tricks/show.html.twig', [
@@ -65,23 +67,58 @@ class TricksController extends AbstractController
         ]);
     }
     /**
-     * @Route("/modifier-tricks/{slug}", name="tricks_update")
-     * @param                     $slug
+     * @Route("/modifier-tricks/{id}", name="tricks_update")
+     * @param                     $id
      *
      * @IsGranted("ROLE_USER")
      *
      * @return Response
      */
-    public function update($slug, Request $request, CategoryRepository $repoCat ): Response
+    public function update($id, Request $request, CategoryRepository $repoCat, MediaRepository $repoMedia ): Response
     {
         $categorie = $repoCat->findAll();
-        $tricks = $this->em->getRepository(Tricks::class)->findOneBySlug($slug);
+        $tricks = $this->em->getRepository(Tricks::class)->findOneById($id);
+        $images = $repoMedia->findBy(array('tricks' => $tricks->getId()));
         $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-           dump($form->getData());
-           dd($form->get('category')->getData());
+            /*Gestion de l'upload du main_image' dans la table tricks*/
+            $main_file = $form->get('main_image')->getData();
+            if(isset($main_file)){
+                /*Change path before move file in media directory*/
+                $newPath = 'asset/media/main/'.$main_file->getBasename();
+                $tricks->setMainImage($newPath);
+                try {
+                    $main_file->move(
+                        $this->getParameter('img_main_directory'),
+                        $newPath
+                    );
+                    throw new FileException( 'Echec lors du déplacement du fichier.' );
+                } catch (FileException $e) {
+
+                    $this->addFlash('success', '$e->getMessage()');
+                }
+            }
+
+            /*Gestion de l'upload des images'*/
+            foreach ($tricks->getMedia() as $image) {
+                if(!is_null( $image->getPath())){
+
+                    $oldPath = $image->getPath();
+                    $newPath = 'asset/media/img/' . substr($image->getPath(), -11, 11);
+                    $image->setType('img');
+                    $image->setPath($newPath);
+                    $image->setName('Tricks de snowtricks ');
+                    /*Déplacement des images dans fichier media'*/
+                    move_uploaded_file( $oldPath, $this->getParameter('kernel.project_dir').'/public/'. $newPath);
+                }
+            }
+            $tricks->setUpdateAt(new \Datetime);
+            $this->em->flush();
+            $this->addFlash('success', 'Votre trick a été modifié avec succés !');
+            return $this->redirectToRoute('tricks_show', ['id' => $tricks->getId()]);
+
         }
         return $this->render('tricks/update.html.twig', [
             'tricks' => $tricks,
@@ -149,23 +186,23 @@ class TricksController extends AbstractController
             $this->em->persist($tricks);
             $this->em->flush();
             $this->addFlash('success', 'Votre trick a été ajouté avec succés !');
-            return $this->redirectToRoute('tricks_add');
+            return $this->redirectToRoute('home');
         }
         return $this->render('tricks/add.html.twig', [
             'form'=>$form->createView()
         ]);
     }
     /**
-     * @Route("/snowtricks/{slug}", name="tricks_delete")
-     * @param                     $slug
+     * @Route("/snowtricks/{id}", name="tricks_delete")
+     * @param                     $id
      *
      * @IsGranted("ROLE_USER")
      *
      * @return Response
      */
-    public function delete($slug, Request $request ): Response
+    public function delete($id, Request $request ): Response
     {
-        $tricks = $this->em->getRepository(Tricks::class)->findOneBySlug($slug);
+        $tricks = $this->em->getRepository(Tricks::class)->findOneBySlug($id);
 
 
         return $this->render('tricks/show.html.twig', [

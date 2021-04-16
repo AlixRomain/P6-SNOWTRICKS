@@ -19,10 +19,8 @@ class TricksUpdateType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //dd( $options['categorie'][0]);
         $choice = [];
         foreach ($options['categorie'] as $val){
-
             array_push($choice,[ $val->getName() =>  $val->getCategoryParent()]);
         };
 
@@ -42,7 +40,7 @@ class TricksUpdateType extends AbstractType
             ])
             ->add('main_image', FileType::class, [
                 'label' => false,
-                'required' => true,
+                'required' => false,
                 'data_class' => null,
                 'attr' => [
                     'placeholder' => 'Ajouter ou modifier l\'image principale du tricks',

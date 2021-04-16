@@ -77,6 +77,8 @@ class Tricks
      */
     private $videos;
 
+
+
     public function __construct()
     {
         $this->category = new ArrayCollection();

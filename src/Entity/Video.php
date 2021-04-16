@@ -28,7 +28,7 @@ class Video
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $path;
 
@@ -71,7 +71,7 @@ class Video
         return $this->path;
     }
 
-    public function setPath(string $path): self
+    public function setPath(?string  $path): self
     {
         $this->path = $path;
 

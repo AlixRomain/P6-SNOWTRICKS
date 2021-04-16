@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Modification d'un trick{% endblock %}
+{% block title %}Ajout d'un trick{% endblock %}
 
 {% form_theme form _self %}
 
@@ -70,7 +70,7 @@
     </div>
     {% endblock %}
 
-    {% block _tricks_update_image_entry_widget %}
+{% block _tricks_update_image_entry_widget %}
     <div class="row block-image"  id="block_{{id}}">
         <div class="col-md-6 offset-md-2">
             <div class="form-group">
@@ -85,7 +85,7 @@
     </div>
 {% endblock %}
 
-    {% block _tricks_update_videos_entry_widget %}
+{% block _tricks_update_videos_entry_widget %}
     <div class="row block-image"  id="block_{{id}}">
         <div class="col-md-6 offset-md-2">
             <div class="form-group">

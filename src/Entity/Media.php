@@ -28,7 +28,7 @@ class Media
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $path;
 
@@ -47,6 +47,9 @@ class Media
         return $this->id;
     }
 
+    /**
+     * @return Tricks|null
+     */
     public function getTricks(): ?Tricks
     {
         return $this->tricks;
@@ -71,12 +74,20 @@ class Media
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getPath(): ?string
     {
         return $this->path;
     }
 
-    public function setPath(string $path): self
+    /**
+     * @param string|null $path
+     *
+     * @return Media
+     */
+    public function setPath( ?string $path): self
     {
         $this->path = $path;
 

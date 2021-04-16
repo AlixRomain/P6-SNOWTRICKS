@@ -19,7 +19,7 @@ class ImageType extends AbstractType
                 'data_class' => null,
                 'attr' => [
                     'placeholder' => 'Votre image',
-                    'class' => 'img-trick'
+                    'class' => 'img-trick',
                 ],
             ]);
     }
