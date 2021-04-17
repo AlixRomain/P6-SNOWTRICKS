@@ -25,7 +25,8 @@ class TricksController extends AbstractController
 {
     private $em;
     private $slugify;
-
+    private $path_main;
+    private $path_img;
 
     function __construct( EntityManagerInterface $entityManager)
     {
@@ -79,41 +80,44 @@ class TricksController extends AbstractController
         $categorie = $repoCat->findAll();
         $tricks = $this->em->getRepository(Tricks::class)->findOneById($id);
         $images = $repoMedia->findBy(array('tricks' => $tricks->getId()));
+        $main_image = $tricks->getMainImage();
         $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /*Gestion de l'upload du main_image' dans la table tricks*/
-            $main_file = $form->get('main_image')->getData();
-            if(isset($main_file)){
+            $main_file = $form->get('file')->getData();
+            if($main_file !== null){
                 /*Change path before move file in media directory*/
-                $newPath = 'asset/media/main/'.$main_file->getBasename();
-                $tricks->setMainImage($newPath);
-                try {
-                    $main_file->move(
-                        $this->getParameter('img_main_directory'),
-                        $newPath
-                    );
-                    throw new FileException( 'Echec lors du déplacement du fichier.' );
-                } catch (FileException $e) {
-
-                    $this->addFlash('success', '$e->getMessage()');
-                }
+                $tricks->setPath($this->getParameter('img_main_directory').'/');
+                $tricks->setOldPath($main_image);
+                $tricks->setMainImage($main_file->getBasename());
             }
 
             /*Gestion de l'upload des images'*/
             foreach ($tricks->getMedia() as $image) {
-                if(!is_null( $image->getPath())){
-
-                    $oldPath = $image->getPath();
-                    $newPath = 'asset/media/img/' . substr($image->getPath(), -11, 11);
+                if( $image->getFile() !== null) {
                     $image->setType('img');
-                    $image->setPath($newPath);
-                    $image->setName('Tricks de snowtricks ');
-                    /*Déplacement des images dans fichier media'*/
-                    move_uploaded_file( $oldPath, $this->getParameter('kernel.project_dir').'/public/'. $newPath);
+                    $image->setOldPath( $image->getName());
+                    $image->setPath(substr($image->getFile(), 14, 26));
+                    $image->setPathDirectory($this->getParameter('img_directory') . '/');
+                    $image->setName($image->getPath());
                 }
             }
+            /*Gestion de l'upload des videos'*/
+            $pathRootVideo = 'https://www.youtube.com/embed/';
+            $goodPath = [];
+            foreach ($tricks->getVideos() as $video){
+                if($video->getpath() !== null) {
+                    $video->setTricks($tricks);
+                    $video->setType('video');
+                    $video->setName('Une video youtube partenaire de Snowtricks');
+                    dump($video->getPath());
+                    parse_str(parse_url($video->getPath(), PHP_URL_QUERY), $goodPath);
+                    $video->setPath($pathRootVideo . $goodPath['v']);
+                }
+            }
+
             $tricks->setUpdateAt(new \Datetime);
             $this->em->flush();
             $this->addFlash('success', 'Votre trick a été modifié avec succés !');
@@ -141,32 +145,21 @@ class TricksController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /*Gestion de l'upload du main_image' dans la table tricks*/
-            $main_file = $form->get('main_image')->getData();
-            if(isset($main_file)){
+            $main_file = $form->get('file')->getData();
+            if($main_file !== 'default-image'){
                 /*Change path before move file in media directory*/
-                $newPath = 'asset/media/main/'.$main_file->getBasename();
-                $tricks->setMainImage($newPath);
-                try {
-                    $main_file->move(
-                        $this->getParameter('img_main_directory'),
-                        $newPath
-                    );
-                    throw new FileException( 'Echec lors du déplacement du fichier.' );
-                } catch (FileException $e) {
-
-                    $this->addFlash('success', '$e->getMessage()');
-                }
+                $tricks->setPath($this->getParameter('img_main_directory').'/');
+                $tricks->setMainImage($main_file->getBasename());
+            }else{
+                $tricks->setMainImage('default-image');
             }
 
             /*Gestion de l'upload des images'*/
             foreach ($tricks->getMedia() as $image) {
-                $oldPath = $image->getPath();
-                $newPath = 'asset/media/img/' . substr($image->getPath(), -11, 11);
                 $image->setType('img');
-                $image->setPath($newPath);
-                $image->setName('Tricks de snowtricks ');
-                /*Déplacement des images dans fichier media'*/
-                move_uploaded_file( $oldPath, $this->getParameter('kernel.project_dir').'/public/'. $newPath);
+                $image->setPath(substr($image->getFile(), 14, 26));
+                $image->setPathDirectory($this->getParameter('img_directory').'/');
+                $image->setName($image->getPath());
             }
 
             /*Gestion de l'upload des videos'*/
@@ -184,6 +177,7 @@ class TricksController extends AbstractController
             $tricks->setCreatedAt(new \DateTime());
             $tricks->setSlug($this->slugify->slugify(strtolower($tricks->getName())));
             $this->em->persist($tricks);
+
             $this->em->flush();
             $this->addFlash('success', 'Votre trick a été ajouté avec succés !');
             return $this->redirectToRoute('home');

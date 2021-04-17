@@ -6,10 +6,12 @@ use App\Repository\TricksRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TricksRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Tricks
 {
@@ -54,6 +56,7 @@ class Tricks
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
      */
     private $main_image;
 
@@ -77,8 +80,34 @@ class Tricks
      */
     private $videos;
 
+    private $path;
 
 
+    /**
+     * @Assert\Image(
+     *      maxSize = "1M",
+     *      maxSizeMessage = "Votre avatar ne doit pas dépasser 1 Mo",
+     * )
+     */
+    private $file;
+
+    private $old_path;
+
+    /**
+     * @return mixed
+     */
+    public function getOldPath()
+    {
+        return $this->old_path;
+    }
+
+    /**
+     * @param mixed $old_path
+     */
+    public function setOldPath($old_path): void
+    {
+        $this->old_path = $old_path;
+    }
     public function __construct()
     {
         $this->category = new ArrayCollection();
@@ -172,6 +201,18 @@ class Tricks
     public function setMainImage(string $main_image): self
     {
         $this->main_image = $main_image;
+
+        return $this;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function setPath($path)
+    {
+        $this->path = $path;
 
         return $this;
     }
@@ -289,4 +330,36 @@ class Tricks
 
         return $this;
     }
+
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PreFlush()
+     */
+    public function handleFile()
+    {
+        if ($this->file === null) {
+            return;
+        }
+
+        // Delete image from the server if update
+        if ($this->id && $this->main_image !== 'default-image') {
+            unlink( $this->path.$this->old_path);
+        }
+        // Moving image into the image repository
+        $this->file->move($this->path, $this->main_image);
+    }
+
+
 }

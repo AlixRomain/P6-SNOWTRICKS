@@ -7,7 +7,7 @@
         <div class="row justify-content-center">
             <div class="col-md-10 col-md-offset-1 mb-4">
                 <div class="card mt-5">
-                    <img class="display-top img-fluid" src="{{ asset(tricks.mainimage) }}" alt="{{ tricks.name }}-main">
+                    <img class="display-top img-fluid" src="/asset/media/main/{{ asset(tricks.mainimage) }}" alt="{{ tricks.name }}-main">
                     <div class="card-body">
                         <ul class="list-inline trick-data mb-5">
                             <li class="list-inline-item">
@@ -39,6 +39,7 @@
                         <button id="seeMedia" type="button" class="btn btn-warning seeMedia">Voir les médias</button>
                         <!-- Start Carousel -->
                         <div id="carMedia" class="row  d-lg-flex load-media ">
+                            {% if tricks.media is defined %}
                             <div class="col-lg-6 col-md-12">
                                 <div id="carousel_image" class="carousel slide mt-3 mb-2" data-ride="carousel">
                                      <ol class="carousel-indicators">
@@ -51,7 +52,7 @@
                                  <div class="carousel-inner enlarge">
                                      {% for img in tricks.media %}
                                          <div class="carousel-item{% if loop.index == 1 %} active {% endif %}">
-                                             <img class="d-block mediaSize" src="{{ asset(img.path) }}" alt="{{ asset(img.name) }}">
+                                             <img class="d-block mediaSize" src="/asset/media/img{{ asset(img.path) }}" alt="{{ asset(img.name) }}">
                                          </div>
                                      {% endfor %}
                                  </div>
@@ -63,6 +64,7 @@
                                     </a>
                                 </div>
                             </div>
+                            {% endif %}
                             <div class="col-lg-6 col-md-12">
                                 <div id="carousel-v" class="carousel slide mt-3 mb-2" data-ride="carousel">
                                     <ol class="carousel-indicators">

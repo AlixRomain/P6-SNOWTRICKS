@@ -82,7 +82,7 @@ class AppFixtures extends Fixture
                 $trick = new Tricks();
                 $trick ->setAuthorId( $adherent)
                     ->setName( $this->faker->sentence(2))
-                    ->setMainImage('asset/media/main/snow_'.$this->faker->numberBetween(1,22).'.jpg')
+                    ->setMainImage('snow_'.$this->faker->numberBetween(1,22).'.jpg')
                     ->setCreatedAt($this->faker->dateTimeInInterval( '-2 years', 'now'))
                     ->setSlug($this->slug->slugify(strtolower($trick->getName())))
                     ->addCategory($allCategorie[$this->faker->numberBetween(0,19)])
@@ -93,15 +93,15 @@ class AppFixtures extends Fixture
             //Association d'une ou 4 image et d'une ou 4 vidéos à un tricks---------------------------------------------
             for($m = 0; $m < 4; $m++) {
                 $img = new Media();
-                $img->setName($this->faker->sentence(2))
-                    ->setPath('asset/media/img/snow_' . $this->faker->numberBetween(1, 22) . '.jpg')
+                $img->setPath('snow_' . $this->faker->numberBetween(1, 22) . '.jpg')
+                    ->setName($img->getPath())
                     ->setTricks($trick)
                     ->setType('img');
                 $manager->persist($img);
 
                 $video = new Video();
-                $video->setName($this->faker->sentence(2))
-                    ->setPath($tr["video"][$this->faker->numberBetween(0, 9)]["name"])
+                $video ->setPath($tr["video"][$this->faker->numberBetween(0, 9)]["name"])
+                    ->setName($video->getPath())
                     ->setTricks($trick)
                     ->setType('video');
                 $manager->persist($video);

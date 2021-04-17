@@ -4,9 +4,11 @@ namespace App\Entity;
 
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity(repositoryClass=MediaRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Media
 {
@@ -37,14 +39,44 @@ class Media
      */
     private $type;
 
-    public function __toString()
+
+    private $file;
+
+    private $old_path;
+
+    /**
+     * @return mixed
+     */
+    public function getOldPath()
     {
-        return $this->path;
+        return $this->old_path;
+    }
+
+    /**
+     * @param mixed $old_path
+     */
+    public function setOldPath($old_path): void
+    {
+        $this->old_path = $old_path;
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    private $pathDirectory;
+
+    public function getPathDirectory()
+    {
+        return $this->pathDirectory;
+    }
+
+    public function setPathDirectory($pathDirectory)
+    {
+        $this->pathDirectory = $pathDirectory;
+
+        return $this;
     }
 
     /**
@@ -105,4 +137,59 @@ class Media
 
         return $this;
     }
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param UploadedFile|null $file
+     *
+     * @return $this
+     */
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+    /**
+     * @ORM\PreFlush()
+     */
+    public function handleImage()
+    {
+        if ($this->file === null) {
+            return;
+        }
+
+        // If update
+        if ($this->id) {
+            unlink($this->pathDirectory.$this->old_path);
+        }
+        // Moving image into the image repository
+        $this->file->move($this->pathDirectory, $this->path);
+
+    }
+    private  $tempFilename;
+    /**
+     * @ORM\PreRemove()
+     */
+    public function preRemoveUpload()
+    {
+        // Saving image name (after removing from database, the image name doesn't exist anymore)
+        $this->tempFilename = $this->path . '/' . $this->name;
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload()
+    {
+        // We doesn't have the id, we use the image name
+        if (file_exists($this->tempFilename)) {
+            // Deleting the file
+            unlink($this->tempFilename);
+        }
+    }
+
 }

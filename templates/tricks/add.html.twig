@@ -9,7 +9,7 @@
     <h1 class="text-center  mb-5">Ajouter un Tricks</h1>
     {{ form_start(form) }}
         <div class="effetBtn" style="width: 100%">
-            <p class="mb-5">Image principale</p>{{ form_row(form.main_image) }}
+            <p class="mb-5">Image principale</p>{{ form_row(form.file) }}
         </div>
 
     <div class="row text-center">
@@ -74,8 +74,8 @@
     <div class="row block-image"  id="block_{{id}}">
         <div class="col-md-6 offset-md-2">
             <div class="form-group">
-                {{ form_errors(form.path) }}
-                {{ form_widget(form.path) }}
+                {{ form_errors(form.file) }}
+                {{ form_widget(form.file) }}
             </div>
         </div>
         <div class="col-md-2">
