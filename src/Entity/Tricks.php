@@ -289,7 +289,6 @@ class Tricks
             $this->comments[] = $comment;
             $comment->setTricks($this);
         }
-
         return $this;
     }
 
@@ -301,7 +300,6 @@ class Tricks
                 $comment->setTricks(null);
             }
         }
-
         return $this;
     }
 
@@ -331,7 +329,6 @@ class Tricks
                 $video->setTricks(null);
             }
         }
-
         return $this;
     }
 
@@ -376,6 +373,5 @@ class Tricks
         }
 
     }
-
-
 }
+

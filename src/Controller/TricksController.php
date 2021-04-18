@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Media;
 use App\Entity\Tricks;
+use App\Form\CommentType;
 use App\Form\TricksUpdateType;
 use App\Repository\CategoryRepository;
 use App\Repository\MediaRepository;
@@ -50,20 +52,30 @@ class TricksController extends AbstractController
 
     /**
      * @Route("/snowtricks/{id}", name="tricks_show")
-     * @param                     $id
+     * @param                     $trick
      *
      * @param SerializerInterface $serializer
      *
      * @return Response
      */
-    public function show($id, Request $request ): Response
+    public function show(Tricks $trick, Request $request ): Response
     {
-        $tricks = $this->em->getRepository(Tricks::class)->findOneById($id);
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setContent($form->get('content')->getData());
+            $comment->setDateCreate(new \DateTime());
+            $comment->setAuthor($this->getUser());
+            $comment->setTricks($trick);
 
+            $this->em->persist($comment);
+            $this->em->flush();
+        }
 
         return $this->render('tricks/show.html.twig', [
-            'tricks' => $tricks,
-            'form'=>'rien'
+            'tricks' => $trick,
+            'form'   => $form->createView()
 
         ]);
     }

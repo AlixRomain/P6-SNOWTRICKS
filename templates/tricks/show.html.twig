@@ -101,7 +101,6 @@
                         <p class="card-text text-justify p-3"><strong>{{ tricks.description }}</strong></p>
                     </div>
                 </div>
-                    {#
                       <!-- Start Comment Add Form -->
                       {% if app.user %}
                           <div class="col-lg-12 px-0 mt-3 mb-3 bg-light">
@@ -122,11 +121,10 @@
                       {% else %}
                           <div class="col-md-12 px-0 mb-3">
                               <div class="comments text-center p-3">
-                                  <p><a href="{{ path('account_register') }}">Inscrivez-vous</a> ou <a href="{{ path('account_login') }}">connectez vous</a> pour commenter cet article</p>
+                                  <p><a href="">Inscrivez-vous</a> ou <a href="">connectez vous</a> pour commenter cet article</p>
                           </div>
                     </div>
                     {% endif %}
-                 #}
                 <!-- Start Comment Add Form -->
 
                 <!-- Start Comments -->
