@@ -56,15 +56,19 @@
                                          </div>
                                      {% endfor %}
                                  </div>
-                                    <a class="carousel-control-prev" href="#carousel_image" data-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#carousel_image" data-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                    </a>
+                                    {% if tricks.media|length > 1 %}
+                                        <a class="carousel-control-prev" href="#carousel_image" data-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#carousel_image" data-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </a>
+                                    {% endif%}
                                 </div>
                             </div>
                             {% endif %}
+
+                            {% if tricks.videos is defined %}
                             <div class="col-lg-6 col-md-12">
                                 <div id="carousel-v" class="carousel slide mt-3 mb-2" data-ride="carousel">
                                     <ol class="carousel-indicators">
@@ -79,14 +83,17 @@
                                                 </div>
                                         {% endfor %}
                                     </div>
-                                    <a class="carousel-control-prev" href="#carousel-v" data-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#carousel-v" data-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                    </a>
+                                    {% if tricks.videos|length > 1 %}
+                                        <a class="carousel-control-prev" href="#carousel-v" data-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#carousel-v" data-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </a>
+                                    {% endif %}
                                 </div>
-                        </div>
+                            </div>
+                            {% endif %}
 
                         <!-- End Carousel -->
                         <hr>

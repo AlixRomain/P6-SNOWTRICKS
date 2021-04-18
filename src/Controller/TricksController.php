@@ -112,9 +112,8 @@ class TricksController extends AbstractController
                     $video->setTricks($tricks);
                     $video->setType('video');
                     $video->setName('Une video youtube partenaire de Snowtricks');
-                    dump($video->getPath());
-                    parse_str(parse_url($video->getPath(), PHP_URL_QUERY), $goodPath);
-                    $video->setPath($pathRootVideo . $goodPath['v']);
+                    preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $video->getPath(), $matches);
+                    $video->setPath($pathRootVideo . $matches[1]);
                 }
             }
 
@@ -169,8 +168,8 @@ class TricksController extends AbstractController
                 $video->setTricks($tricks);
                 $video->setType('video');
                 $video->setName('Une video youtube partenaire de Snowtricks');
-                parse_str( parse_url( $video->getPath(), PHP_URL_QUERY ), $goodPath );
-                $video->setPath($pathRootVideo.$goodPath['v']);
+                preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $video->getPath(), $matches);
+                $video->setPath($pathRootVideo . $matches[1]);
             }
             /*Hydration of tricks with form data*/
             $tricks->setAuthorId($this->getUser());
