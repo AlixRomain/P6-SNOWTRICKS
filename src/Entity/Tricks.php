@@ -353,9 +353,8 @@ class Tricks
         if ($this->file === null) {
             return;
         }
-
         // Delete image from the server if update
-        if ($this->id && $this->main_image !== 'default-image' && file_exists($this->path.$this->old_path)) {
+        if ($this->id && $this->main_image !== 'default-image.jpg' && file_exists($this->path.$this->old_path)) {
             unlink( $this->path.$this->old_path);
         }
         // Moving image into the image repository
@@ -368,10 +367,9 @@ class Tricks
     public function handleFileDelete()
     {
         // Delete image from the server if delete the trick && if file with this name exist
-        if ($this->id && $this->main_image !== 'default-image' && file_exists($this->path.$this->old_path)) {
+        if ($this->id && $this->main_image !== 'default-image.jpg' && file_exists($this->path.$this->old_path)) {
             unlink( $this->path.$this->old_path);
         }
-
     }
 }
 

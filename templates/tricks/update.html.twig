@@ -80,6 +80,7 @@
                     </div>
                 </div>
                 <button type="submit" class="btn btn-success">Modifier ce tricks</button>
+                <a  href="{{ path("tricks_delete", {'id' : form.vars.data.id})}}"  title="Supprimer ce tricks" class="btn btn-danger">Supprimer ce tricks</a>
             </div>
         </div>
         {{ form_end(form) }}

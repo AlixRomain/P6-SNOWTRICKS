@@ -8,11 +8,25 @@
 <div class="container">
     <h1 class="text-center  mb-5">Ajouter un Tricks</h1>
     {{ form_start(form) }}
-        <div class="effetBtn" style="width: 100%">
-            <p class="mb-5">Image principale</p>{{ form_row(form.file) }}
-            {{ form_errors(form) }}
+             <div class="effetBtn" style="width: 100%">
+             <div class="col  mb-5">
+                 <img id="mainImage" src="/asset/media/main{{ asset(form.vars.data.mainImage) }}" width="100%" alt="form.vars.data.mainImage">
+            </div>
+            <p>
+                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Modifier l'image
+                  </button>
+                  {{ form_errors(form.file) }}
+            </p>
+            <div class="collapse  mb-5" id="collapseExample">
+                <div class="card card-body">
+                    <div>
+                         <p class="mb-5">Image principale</p>
+                         {{ form_row(form.file) }}
+                     </div>
+                 </div>
+            </div>
         </div>
-
     <div class="row text-center">
         <div class="col">
             <div class="p-3 mb-2 ">

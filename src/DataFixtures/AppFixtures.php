@@ -116,7 +116,7 @@ class AppFixtures extends Fixture
                   ->setPassword($this->passwordEncoder->encodePassword($adherentAdmin,'toto'))
                   ->setRgpd(1)
                   ->setRoles($roleAdmin)
-                  ->setAvatar('profil_'.$this->faker->numberBetween(1,20).'jpg')
+                  ->setAvatar('moi.jfif')
                   ->setDateCreate($this->faker->dateTimeInInterval( '-2 years', 'now'))
                   ->setDevise('Née pour coder')
                   ->setSlug($this->slug->slugify(strtolower($adherentAdmin->getFname().$adherentAdmin->getLname())));

@@ -137,7 +137,7 @@
                                     <div  class="row mb-3 pl-2 bg-light {% if loop.index > 3 %} hidden-tricks" style="display:none;"{% endif %}>
                                         <span class="comment-anchor" id="{{ comment.id }}"></span>
                                         <div class="col-md-3 text-center p-5">
-                                            <img src="{{ asset(comment.author.avatar) }}" class="user-profile" alt="{{ comment.author.fname}}">
+                                            <img src="{{ asset(comment.author.avatar) }}" class="user-profile" style="width: 100%" alt="{{ comment.author.fname}}">
                                         </div>
                                         <div class="col-md-9 p-5">
                                             <p>

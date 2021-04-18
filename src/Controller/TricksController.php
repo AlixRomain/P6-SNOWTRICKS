@@ -87,11 +87,10 @@ class TricksController extends AbstractController
      *
      * @return Response
      */
-    public function update($id, Request $request, CategoryRepository $repoCat, MediaRepository $repoMedia ): Response
+    public function update($id, Request $request, CategoryRepository $repoCat ): Response
     {
         $categorie = $repoCat->findAll();
         $tricks = $this->em->getRepository(Tricks::class)->findOneById($id);
-        $images = $repoMedia->findBy(array('tricks' => $tricks->getId()));
         $main_image = $tricks->getMainImage();
         $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
 
@@ -99,7 +98,7 @@ class TricksController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('file')->getData();
-            if($main_file !== null){
+            if(!is_null($main_file)){
                 /*Change path before move file in media directory*/
                 $tricks->setPath($this->getParameter('img_main_directory').'/');
                 $tricks->setOldPath($main_image);
@@ -153,18 +152,17 @@ class TricksController extends AbstractController
     {
         $categorie = $repoCat->findAll();
         $tricks = new Tricks();
+        $tricks->setMainImage('default-image.jpg');
         $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('file')->getData();
-            if($main_file !== 'default-image'){
+            if(!is_null($main_file) && ($tricks->getPath() !== 'default-image.jpg')){
                 /*Change path before move file in media directory*/
                 $tricks->setPath($this->getParameter('img_main_directory').'/');
                 $tricks->setMainImage($main_file->getBasename());
-            }else{
-                $tricks->setMainImage('default-image');
             }
 
             /*Gestion de l'upload des images'*/
