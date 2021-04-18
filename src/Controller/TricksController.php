@@ -123,9 +123,11 @@ class TricksController extends AbstractController
             return $this->redirectToRoute('tricks_show', ['id' => $tricks->getId()]);
 
         }
+
         return $this->render('tricks/update.html.twig', [
             'tricks' => $tricks,
-            'form'=>$form->createView()
+            'form'=>$form->createView(),
+            'errors'=>$form->getErrors()
         ]);
     }
     /**
@@ -186,21 +188,22 @@ class TricksController extends AbstractController
         ]);
     }
     /**
-     * @Route("/snowtricks/{id}", name="tricks_delete")
-     * @param                     $id
+     * @Route("/supprimer-tricks/{id}", name="tricks_delete")
+     * @param                     $trick
      *
      * @IsGranted("ROLE_USER")
      *
      * @return Response
      */
-    public function delete($id, Request $request ): Response
+    public function delete(Tricks $trick): Response
     {
-        $tricks = $this->em->getRepository(Tricks::class)->findOneBySlug($id);
-
-
-        return $this->render('tricks/show.html.twig', [
-            'tricks' => $tricks,
-            'pagination'=>'rien'
-        ]);
+        $trick->setOldPath($trick->getMainImage());
+        $trick->setPath($this->getParameter('img_main_directory').'/');
+        foreach($trick->getMedia() as $img){
+            $img->setPathDirectory($this->getParameter('img_directory').'/');
+         }
+        $this->em->remove($trick);
+        $this->em->flush();
+        return $this->redirectToRoute('home');
     }
 }

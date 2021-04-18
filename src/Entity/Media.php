@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=MediaRepository::class)
@@ -39,7 +40,16 @@ class Media
      */
     private $type;
 
-
+    /**
+     * @Assert\Image(
+     *      maxSize = "1M",
+     *      maxSizeMessage = "L'image principal ne doit pas dépasser 1 Mo",
+     *      minWidth="600",
+     *      minWidthMessage="Snowtricks n'accepte que des images de plus de 600 px",
+     *      mimeTypes={"image/jpeg","image/jpg"},
+     *      mimeTypesMessage="L'extension ({{ type }}) est invalide. Seul l'extension {{ types }} est acceptée."
+     * )
+     */
     private $file;
 
     private $old_path;
@@ -176,8 +186,8 @@ class Media
      */
     public function preRemoveUpload()
     {
-        // Saving image name (after removing from database, the image name doesn't exist anymore)
-        $this->tempFilename = $this->path . '/' . $this->name;
+        // delete each file with name === file.name
+        $this->tempFilename = $this->getPathDirectory(). $this->name;
     }
 
     /**
@@ -185,9 +195,8 @@ class Media
      */
     public function removeUpload()
     {
-        // We doesn't have the id, we use the image name
+        // Deleting the file
         if (file_exists($this->tempFilename)) {
-            // Deleting the file
             unlink($this->tempFilename);
         }
     }

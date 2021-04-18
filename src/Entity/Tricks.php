@@ -35,7 +35,7 @@ class Tricks
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\Length(min=25, minMessage="La description doit être plus longue", allowEmptyString="false")
+     * @Assert\Length(min=0, minMessage="Vous devez donner un nom à votre tricks", allowEmptyString="false")
      */
     private $description;
 
@@ -66,7 +66,7 @@ class Tricks
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="tricks",cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="tricks",cascade={"persist","remove"})
      */
     private $media;
 
@@ -76,7 +76,7 @@ class Tricks
     private $comments;
 
     /**
-     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="tricks",cascade={"persist"})
+     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="tricks",cascade={"persist","remove"})
      */
     private $videos;
 
@@ -86,7 +86,11 @@ class Tricks
     /**
      * @Assert\Image(
      *      maxSize = "1M",
-     *      maxSizeMessage = "Votre avatar ne doit pas dépasser 1 Mo",
+     *      maxSizeMessage = "L'image principal ne doit pas dépasser 1 Mo",
+     *      minWidth="600",
+     *      minWidthMessage="L'image principal doit faire plus de 600 px",
+     *      mimeTypes={"image/jpeg","image/jpg"},
+     *      mimeTypesMessage="L'extension ({{ type }}) est invalide. Seul l'extension {{ types }} est acceptée."
      * )
      */
     private $file;
@@ -354,11 +358,23 @@ class Tricks
         }
 
         // Delete image from the server if update
-        if ($this->id && $this->main_image !== 'default-image') {
+        if ($this->id && $this->main_image !== 'default-image' && file_exists($this->path.$this->old_path)) {
             unlink( $this->path.$this->old_path);
         }
         // Moving image into the image repository
         $this->file->move($this->path, $this->main_image);
+    }
+
+    /**
+     * @ORM\PreRemove()
+     */
+    public function handleFileDelete()
+    {
+        // Delete image from the server if delete the trick && if file with this name exist
+        if ($this->id && $this->main_image !== 'default-image' && file_exists($this->path.$this->old_path)) {
+            unlink( $this->path.$this->old_path);
+        }
+
     }
 
 
