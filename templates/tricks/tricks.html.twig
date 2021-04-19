@@ -61,11 +61,15 @@
             <div class="btn btn-info" id="loadLessTrick" style="display:none" >-</div>
         </div>
         <div class="text-right">
-            <a id="up" class="home-link-bottom " title="Aller en haut de la page">
+            <a id="up" class="home-link-bottom cursor" title="Aller en haut de la page">
                 <i class="fas fa-chevron-up fa-3x chevron-up"></i>
             </a>
         </div>
-
-
     </div>
+    <script src="{{ asset('asset/bootstrap/js/snow.js') }}"></script>
+    <script type="text/javascript">
+      window.onload = function(){
+        snow.init(10);
+      };
+    </script>
 {% endblock %}

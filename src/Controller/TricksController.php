@@ -45,7 +45,7 @@ class TricksController extends AbstractController
     public function index(TricksRepository $tricksRepo): Response
     {
 
-       $tricks =  $this->tricksRepo->findAll();
+       $tricks =  $this->tricksRepo->findBy([],['created_at'=> 'desc']);
 
         return $this->render('tricks/tricks.html.twig', [
             'tricks' => $tricks,
