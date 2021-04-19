@@ -3,21 +3,19 @@
 {% block title %}Hello HomeController!{% endblock %}
 
 {% block content %}
-    <div class="container d-flex justify-content-center mt-100 mb-100">
+    <div class="container ">
+        <h4 class="card-title">Tous les commentaires</h4>
+        <h6 class="card-subtitle">Commentaires de tous les utilisateurs</h6>
+    </div>
+    <div class="container mt-100 mb-100">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Tous les commentaires</h4>
-                        <h6 class="card-subtitle">Commentaires de tous les utilisateurs</h6>
-                    </div>
-
-                    <div id="comments-title" class="comment-widgets m-b-20 ">
-
+                <div class="card" style="width: 100%">
+                    <div id="comments-title" class="comment-widgets m-b-20 row">
                     {% for comment in comments %}
-                        <div class="comment  hidden-comments" style="display: none">
-                            <div class="d-flex flex-row comment-row" >
-                                <div class="p-2"><span class="round"><img src="{{ asset(comment.author.avatar) }}" alt="{{ asset(comment.author.lname) }}" width="50"></span></div>
+                        <div class="comment  hidden-comments col-md-6" style="display: none">
+                            <div class="d-flex flex-row comment-row " >
+                                <div class="p-3"><span class="round"><img src="{{ asset(comment.author.avatar) }}" alt="{{ asset(comment.author.lname) }}" width="50"></span></div>
                                 <div class="comment-text w-100">
                                     <h5>{{ comment.author.lname }} {{ comment.author.fname }}</h5>
                                     <div class="comment-footer"> <span class="date mr-2">

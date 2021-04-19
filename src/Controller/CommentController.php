@@ -6,6 +6,7 @@ use App\Entity\Comment;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +24,7 @@ class CommentController extends AbstractController
     }
     /**
      * @Route("/admin/tous-les-commantaires", name="admin_comment")
+     * @IsGranted("ROLE_ADMIN")
      */
     public function allComments(): Response
     {
@@ -33,6 +35,7 @@ class CommentController extends AbstractController
     }
      /**
      * @Route("/profile/tous-les-commantaires", name="user_comment")
+      * @IsGranted("ROLE_USER")
      */
     public function allUserComments(): Response
     {
@@ -44,6 +47,7 @@ class CommentController extends AbstractController
 
     /**
      * @Route("/profile/modifier-un-commentaire/{id}", name="update_comment")
+     * @IsGranted("ROLE_USER")
      * @param Comment $comment
      */
     public function update(Comment $comment, Request $request): Response
@@ -62,6 +66,7 @@ class CommentController extends AbstractController
     }
     /**
      * @Route("/profile/supprimer-un-commentaire/{id}", name="delete_comment")
+     * @IsGranted("ROLE_USER")
      *
      * @param Comment $comment
      */

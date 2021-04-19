@@ -7,9 +7,15 @@
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05)
 }
 
-.comment:nth-child(even){
+.comment:nth-child(2n + 2) .comment-row{
     background: #5c636a;
+    overflow: hidden;
 }
+.comment:nth-child(2n + 2) .comment-row:hover{
+    background: #4f5050;
+    overflow: hidden;
+}
+
 
 .comment-widgets .comment-row:hover {
     background: rgba(0, 0, 0, 0.02);
@@ -65,11 +71,11 @@
 }
 
 .mt-100 {
-    margin-top: 100px
+    margin-top: 50px
 }
 
 .mb-100 {
-    margin-bottom: 100px
+    margin-bottom: 50px
 }
 
 /*---------FIN CSS COMMENTAIRE----------------------------*/
@@ -170,6 +176,9 @@ header.masthead .page-heading, header.masthead .site-heading {
 }
 .cursor{
     cursor: pointer;
+}
+#navbarColor03 li>a:hover{
+    color: white!important;
 }
 .hoverShow:hover > .mouseHoverShow{
     display: block;

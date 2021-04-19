@@ -3,6 +3,7 @@ $(function() {
   //gestion de la vues des tricks
   var j = 4 ;
   var vignettes = $('#tricks-title div.trick').length;
+  console.log(vignettes);
   $(document).ready(function() {
     let progress = ((4 * 100) / vignettes);
     $("#tricksBarr").css({'width': progress +'%'});
@@ -49,7 +50,6 @@ $(function() {
   //gestion de la vues des commantaires
   var c = 10 ;
   var comments = $('#comments-title div.comment').length;
-  console.log(comments);
   $(document).ready(function() {
     let progress = ((10 * 100) / comments);
     $("#tricksBarr").css({'width': progress +'%'});
@@ -100,7 +100,6 @@ $(function() {
     }
   }
 function barrHiddenTricks(min,max){
-    console.log(min)
     if(min < max){
       $(".module_progress_tricks").css({'display': 'none',});
     }

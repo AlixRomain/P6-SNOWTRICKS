@@ -219,18 +219,18 @@ class TricksController extends AbstractController
         return $this->redirectToRoute('home');
     }
     /**
-     * Find user tricks
+     * Findall user tricks
      *
      * @Route("/profile/tricks", name="user_tricks")
-     *
+     * @IsGranted("ROLE_USER")
      *
      * @return Response
      */
     public function findUserTricks(): Response
     {
-        $tricks = $this->tricksRepo->findBy(array('author_id' => $this->getUser()));
+        $tricks = $this->tricksRepo->findBy(['author_id' => $this->getUser()], ['created_at'=> 'desc']);
 
-        return $this->render('admin/all_tricks.html.twig', [
+        return $this->render('admin/all_user_tricks.html.twig', [
             'tricks' => $tricks,
         ]);
     }
@@ -240,7 +240,7 @@ class TricksController extends AbstractController
      *
      * @Route("/admin/tricks", name="admin_tricks")
      *
-
+     * @IsGranted("ROLE_ADMIN")
      * @return Response
      */
     public function findAllTricks(): Response
@@ -250,4 +250,5 @@ class TricksController extends AbstractController
             'tricks' => $tricks,
         ]);
     }
+
 }
