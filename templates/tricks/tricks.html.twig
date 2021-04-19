@@ -48,16 +48,6 @@
                                  </div>
                                    {% endfor %}
                             </div>
-                            {% if app.user %}
-                                <div class="mt-3 text-center row">
-                                    <a class="col m-auto btn-block hoverGris" href="{{ path("tricks_update", {'id' : trick.id}) }}" title="Modifier ce tricks" >
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <a class="col m-auto  btn-block hoverGris" href="{{ path("tricks_delete", {'id' : trick.id})}}"  title="Supprimer ce tricks">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
-                                </div>
-                            {% endif %}
                         </div>
                     </div>
                 </div>

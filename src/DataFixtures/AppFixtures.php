@@ -116,7 +116,7 @@ class AppFixtures extends Fixture
                   ->setPassword($this->passwordEncoder->encodePassword($adherentAdmin,'toto'))
                   ->setRgpd(1)
                   ->setRoles($roleAdmin)
-                  ->setAvatar('moi.jfif')
+                  ->setAvatar('asset/media/avatar/moi.jfif')
                   ->setDateCreate($this->faker->dateTimeInInterval( '-2 years', 'now'))
                   ->setDevise('Née pour coder')
                   ->setSlug($this->slug->slugify(strtolower($adherentAdmin->getFname().$adherentAdmin->getLname())));
@@ -129,13 +129,13 @@ class AppFixtures extends Fixture
 
 
         foreach ($allAdherent as $adherent){
-            for($m = 0; $m < 4; $m++) {
+            for($m = 0; $m < 2; $m++) {
             //Association d'un commentaires  à un tricks---------------------------------------------
             $comment = new Comment();
             $comment->setAuthor($adherent)
                 ->setTricks($alltricks[$this->faker->numberBetween(0,19)])
                 ->setContent($this->faker->realText(100))
-                ->setDateCreate($this->faker->dateTimeInInterval( '-2 years', 'now'));
+                ->setDateCreate($this->faker->dateTimeThisMonth( 'now'));
             $manager->persist($comment);
             }
         }

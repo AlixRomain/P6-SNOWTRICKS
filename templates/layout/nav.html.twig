@@ -7,6 +7,11 @@
 
     <div class="collapse navbar-collapse" id="navbarColor02">
         <ul class="navbar-nav ml-auto">
+            {% if app.user %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('home_admin') }}">  Dashboard </a>
+                </li>
+            {% endif %}
             <li class="nav-item">
                 <a class="nav-link" href="">  Tricks  </a>
             </li>

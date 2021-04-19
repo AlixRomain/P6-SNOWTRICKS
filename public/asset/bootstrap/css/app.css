@@ -1,7 +1,84 @@
+/*-------------DEBUT CSS COMMENTAIRES -----------------------*/
+
+.card-no-border .card {
+    border: 0px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05)
+}
+
+.comment:nth-child(even){
+    background: #5c636a;
+}
+
+.comment-widgets .comment-row:hover {
+    background: rgba(0, 0, 0, 0.02);
+    cursor: pointer
+}
+
+.comment-widgets .comment-row {
+    border-bottom: 1px solid rgba(120, 130, 140, 0.13);
+    padding: 15px
+}
+
+.comment-text:hover {
+    visibility: hidden
+}
+
+.comment-text:hover {
+    visibility: visible
+}
+
+.label {
+    padding: 3px 10px;
+    line-height: 13px;
+    color: #ffffff;
+    font-weight: 400;
+    border-radius: 4px;
+    font-size: 75%
+}
+
+.round img {
+    border-radius: 100%
+}
+
+.label-info {
+    background-color: #1976d2
+}
+
+.label-success {
+    background-color: green
+}
+
+.label-danger {
+    background-color: #ef5350
+}
+
+.action-icons a {
+    padding-left: 7px;
+    vertical-align: middle;
+    color: #99abb4
+}
+
+.action-icons a:hover {
+    color: #F5F5F5;
+}
+
+.mt-100 {
+    margin-top: 100px
+}
+
+.mb-100 {
+    margin-bottom: 100px
+}
+
+/*---------FIN CSS COMMENTAIRE----------------------------*/
+
 .container-90{
     width: 90%;
     margin: auto;
 }
+
 header.masthead .overlay {
     position: absolute;
     top: 0;
@@ -91,7 +168,9 @@ header.masthead .page-heading, header.masthead .site-heading {
     width: 100%;
     min-height: calc(100% - 205px);
 }
-
+.cursor{
+    cursor: pointer;
+}
 .hoverShow:hover > .mouseHoverShow{
     display: block;
     background-color: #5c636a;

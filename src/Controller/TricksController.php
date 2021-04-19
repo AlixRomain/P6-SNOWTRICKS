@@ -29,11 +29,13 @@ class TricksController extends AbstractController
     private $slugify;
     private $path_main;
     private $path_img;
+    private $tricksRepo;
 
-    function __construct( EntityManagerInterface $entityManager)
+    function __construct( EntityManagerInterface $entityManager, TricksRepository $tricksRepo)
     {
         $this->em       = $entityManager;
         $this->slugify  = new Slugify();
+        $this->tricksRepo = $tricksRepo;
     }
     /**
      * @Route("/snowtricks", name="home")
@@ -43,7 +45,7 @@ class TricksController extends AbstractController
     public function index(TricksRepository $tricksRepo): Response
     {
 
-        $tricks = $tricksRepo->findAll();
+       $tricks =  $this->tricksRepo->findAll();
 
         return $this->render('tricks/tricks.html.twig', [
             'tricks' => $tricks,
@@ -131,7 +133,7 @@ class TricksController extends AbstractController
             $tricks->setUpdateAt(new \Datetime);
             $this->em->flush();
             $this->addFlash('success', 'Votre trick a été modifié avec succés !');
-            return $this->redirectToRoute('tricks_show', ['id' => $tricks->getId()]);
+            return $this->redirectToRoute('user_tricks');
 
         }
 
@@ -191,7 +193,7 @@ class TricksController extends AbstractController
 
             $this->em->flush();
             $this->addFlash('success', 'Votre trick a été ajouté avec succés !');
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('user_tricks');
         }
         return $this->render('tricks/add.html.twig', [
             'form'=>$form->createView()
@@ -215,5 +217,37 @@ class TricksController extends AbstractController
         $this->em->remove($trick);
         $this->em->flush();
         return $this->redirectToRoute('home');
+    }
+    /**
+     * Find user tricks
+     *
+     * @Route("/profile/tricks", name="user_tricks")
+     *
+     *
+     * @return Response
+     */
+    public function findUserTricks(): Response
+    {
+        $tricks = $this->tricksRepo->findBy(array('author_id' => $this->getUser()));
+
+        return $this->render('admin/all_tricks.html.twig', [
+            'tricks' => $tricks,
+        ]);
+    }
+
+    /**
+     * Find all tricks
+     *
+     * @Route("/admin/tricks", name="admin_tricks")
+     *
+
+     * @return Response
+     */
+    public function findAllTricks(): Response
+    {
+        $tricks = $this->tricksRepo->findAll();
+        return $this->render('admin/all_tricks.html.twig', [
+            'tricks' => $tricks,
+        ]);
     }
 }

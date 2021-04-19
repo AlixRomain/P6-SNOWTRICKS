@@ -9,6 +9,7 @@ $(function() {
     $('.hidden-tricks').slice(0,4).css({
       display:'inherit',
     });
+    barrHiddenTricks(vignettes,4);
   });
 
   $('#loadMoreTrick').click(function(){
@@ -24,6 +25,7 @@ $(function() {
     }else{
       $("#loadLessTrick").show('slow');
     }
+    barrHiddenTricks(vignettes,4);
   })
 
   $('#loadLessTrick').click(function() {
@@ -41,13 +43,70 @@ $(function() {
       $("#loadMoreTrick").show('slow');
       $("#loadLessTrick").hide('slow');
     }
+    barrHiddenTricks(vignettes,4);
   })
 
+  //gestion de la vues des commantaires
+  var c = 10 ;
+  var comments = $('#comments-title div.comment').length;
+  console.log(comments);
+  $(document).ready(function() {
+    let progress = ((10 * 100) / comments);
+    $("#tricksBarr").css({'width': progress +'%'});
+    $('.hidden-comments').slice(0,10).css({
+      display:'inherit',
+    });
+    barrHidden(comments,10);
+  });
 
+  $('#loadMoreC').click(function(){
+      c += 10 ;
+     $('.hidden-comments').slice(10,c).css({
+        display:'inherit',
+      });
+      const progress = ((c * 100) / comments);
+      $("#tricksBarr").css({'width': progress +'%'});
+    if (c >= comments){
+      $("#loadMoreC").hide('slow');
+      $("#loadLessC").show('slow');
+    }else{
+      $("#loadLessC").show('slow');
+    }
+    barrHidden(comments,10);
+  })
 
+  $('#loadLessC').click(function() {
+    c -= 10 ;
+    $('.hidden-comments').slice(c,comments).css({
+      display:'none',
+    })
+    const progress = ((c * 100) / comments);
+    $("#tricksBarr").css({'width': progress +'%'});
 
+    if (10 < c) {
+      $("#loadLessC").show('slow');
+      $("#loadMoreC").show('slow');
+    }else{
+      $("#loadMoreC").show('slow');
+      $("#loadLessC").hide('slow');
+    }
+    barrHidden(comments,10);
+  })
 
-  //Gestion de la vue des comments
+  function barrHidden(min,max){
+    console.log(min)
+    if(min < max){
+      $(".module_progress_comments").css({'display': 'none',});
+    }
+  }
+function barrHiddenTricks(min,max){
+    console.log(min)
+    if(min < max){
+      $(".module_progress_tricks").css({'display': 'none',});
+    }
+  }
+
+  //Gestion de la vue des comments dans la vue SHOW
   $('#loadMoreComment').click(function(){
     $('.hidden-tricks').css({
       display:'flex',
@@ -79,6 +138,12 @@ $(function() {
     }
   }
 
+  $("#downC").click(function(){
+    scrollTo( $('#comments-title') );
+  });
+  $("#upC").click(function(){
+    scrollTo( $('#comments-title') );
+  });
   $("#down").click(function(){
     scrollTo( $('#tricks-title') );
   });
