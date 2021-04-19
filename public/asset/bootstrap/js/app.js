@@ -1,20 +1,52 @@
 $(function() {
+
   //gestion de la vues des tricks
+  var j = 4 ;
+  var vignettes = $('#tricks-title div.trick').length;
+  $(document).ready(function() {
+    let progress = ((4 * 100) / vignettes);
+    $("#tricksBarr").css({'width': progress +'%'});
+    $('.hidden-tricks').slice(0,4).css({
+      display:'inherit',
+    });
+  });
+
   $('#loadMoreTrick').click(function(){
-    $('.hidden-tricks').css({
-      display:'inherit'
-    })
-    $("#loadMoreTrick").hide('slow');
-    $("#loadLessTrick").show('slow');
+      j += 4 ;
+     $('.hidden-tricks').slice(4,j).css({
+        display:'inherit',
+      });
+      const progress = ((j * 100) / vignettes);
+      $("#tricksBarr").css({'width': progress +'%'});
+    if (j >= vignettes){
+      $("#loadMoreTrick").hide('slow');
+      $("#loadLessTrick").show('slow');
+    }else{
+      $("#loadLessTrick").show('slow');
+    }
   })
 
   $('#loadLessTrick').click(function() {
-    $('.hidden-tricks').css({
-      display:'none'
+    j -= 4 ;
+    $('.hidden-tricks').slice(j,vignettes).css({
+      display:'none',
     })
-    $("#loadMoreTrick").show('slow');
-    $("#loadLessTrick").hide('slow');
+    const progress = ((j * 100) / vignettes);
+    $("#tricksBarr").css({'width': progress +'%'});
+
+    if (4 < j) {
+      $("#loadLessTrick").show('slow');
+      $("#loadMoreTrick").show('slow');
+    }else{
+      $("#loadMoreTrick").show('slow');
+      $("#loadLessTrick").hide('slow');
+    }
   })
+
+
+
+
+
   //Gestion de la vue des comments
   $('#loadMoreComment').click(function(){
     $('.hidden-tricks').css({
@@ -56,6 +88,11 @@ $(function() {
   $("#encreComments").click(function(){
     scrollTo( $('#divComment') );
   });
+  /* --------------------------------------------------------------------------------- */
+
+  /*  /* Get More Comments*/
+
+  /* --------------------------------------------------------------------------------- */
 
 
   $("#more").click(function(){
@@ -75,19 +112,14 @@ $(function() {
 
   /* --------------------------------------------------------------------------------- */
   $(document).on('load', '#tricks_update_file', function(event){
-    console.log('toto');
     $(this).value(event.target.files[0].name);
-    console.log(event.target.files[0].name);
   })
   $(document).on('change', '.custom-file-input', function(event){
     $(this).next('.custom-file-label').html(event.target.files[0].name);
-    console.log(event.target.files[0].name)
-    console.log(event.target.files)
   })
   $(document).on('change', '#tricks_update_file', function(event){
     $('#mainImage').hide();
     scrollTo( $('#titre'));
-
   })
 
   /* --------------------------------------------------------------------------------- */
