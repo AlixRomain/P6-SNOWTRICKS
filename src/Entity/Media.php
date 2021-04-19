@@ -4,9 +4,12 @@ namespace App\Entity;
 
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=MediaRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Media
 {
@@ -28,7 +31,7 @@ class Media
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $path;
 
@@ -37,9 +40,34 @@ class Media
      */
     private $type;
 
-    public function __toString()
+    /**
+     * @Assert\Image(
+     *      maxSize = "1M",
+     *      maxSizeMessage = "L'image principal ne doit pas dépasser 1 Mo",
+     *      minWidth="600",
+     *      minWidthMessage="Snowtricks n'accepte que des images de plus de 600 px",
+     *      mimeTypes={"image/jpeg","image/jpg"},
+     *      mimeTypesMessage="L'extension ({{ type }}) est invalide. Seul l'extension {{ types }} est acceptée."
+     * )
+     */
+    private $file;
+
+    private $old_path;
+
+    /**
+     * @return mixed
+     */
+    public function getOldPath()
     {
-        return $this->path;
+        return $this->old_path;
+    }
+
+    /**
+     * @param mixed $old_path
+     */
+    public function setOldPath($old_path): void
+    {
+        $this->old_path = $old_path;
     }
 
     public function getId(): ?int
@@ -47,6 +75,23 @@ class Media
         return $this->id;
     }
 
+    private $pathDirectory;
+
+    public function getPathDirectory()
+    {
+        return $this->pathDirectory;
+    }
+
+    public function setPathDirectory($pathDirectory)
+    {
+        $this->pathDirectory = $pathDirectory;
+
+        return $this;
+    }
+
+    /**
+     * @return Tricks|null
+     */
     public function getTricks(): ?Tricks
     {
         return $this->tricks;
@@ -71,12 +116,20 @@ class Media
         return $this;
     }
 
+    /**
+     * @return string|null
+     */
     public function getPath(): ?string
     {
         return $this->path;
     }
 
-    public function setPath(string $path): self
+    /**
+     * @param string|null $path
+     *
+     * @return Media
+     */
+    public function setPath( ?string $path): self
     {
         $this->path = $path;
 
@@ -94,4 +147,58 @@ class Media
 
         return $this;
     }
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * @param UploadedFile|null $file
+     *
+     * @return $this
+     */
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+    /**
+     * @ORM\PreFlush()
+     */
+    public function handleImage()
+    {
+        if ($this->file === null) {
+            return;
+        }
+
+        // If update
+        if ($this->id) {
+            unlink($this->pathDirectory.$this->old_path);
+        }
+        // Moving image into the image repository
+        $this->file->move($this->pathDirectory, $this->path);
+
+    }
+    private  $tempFilename;
+    /**
+     * @ORM\PreRemove()
+     */
+    public function preRemoveUpload()
+    {
+        // delete each file with name === file.name
+        $this->tempFilename = $this->getPathDirectory(). $this->name;
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload()
+    {
+        // Deleting the file
+        if (file_exists($this->tempFilename)) {
+            unlink($this->tempFilename);
+        }
+    }
+
 }

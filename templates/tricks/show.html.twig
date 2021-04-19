@@ -7,7 +7,7 @@
         <div class="row justify-content-center">
             <div class="col-md-10 col-md-offset-1 mb-4">
                 <div class="card mt-5">
-                    <img class="display-top img-fluid" src="{{ asset(tricks.mainimage) }}" alt="{{ tricks.name }}-main">
+                    <img class="display-top img-fluid" src="/asset/media/main{{ asset(tricks.mainimage) }}" alt="{{ tricks.name }}-main">
                     <div class="card-body">
                         <ul class="list-inline trick-data mb-5">
                             <li class="list-inline-item">
@@ -39,6 +39,7 @@
                         <button id="seeMedia" type="button" class="btn btn-warning seeMedia">Voir les médias</button>
                         <!-- Start Carousel -->
                         <div id="carMedia" class="row  d-lg-flex load-media ">
+                            {% if tricks.media is defined %}
                             <div class="col-lg-6 col-md-12">
                                 <div id="carousel_image" class="carousel slide mt-3 mb-2" data-ride="carousel">
                                      <ol class="carousel-indicators">
@@ -50,47 +51,49 @@
                                  </ol>
                                  <div class="carousel-inner enlarge">
                                      {% for img in tricks.media %}
-                                         {% if img.type =='img' %}
                                          <div class="carousel-item{% if loop.index == 1 %} active {% endif %}">
-                                             <img class="d-block mediaSize" src="{{ asset(img.path) }}" alt="{{ asset(img.name) }}">
+                                             <img class="d-block mediaSize" src="/asset/media/img{{ asset(img.path) }}" alt="{{ asset(img.name) }}">
                                          </div>
-                                         {% endif %}
                                      {% endfor %}
                                  </div>
-                                    <a class="carousel-control-prev" href="#carousel_image" data-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#carousel_image" data-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                    </a>
+                                    {% if tricks.media|length > 1 %}
+                                        <a class="carousel-control-prev" href="#carousel_image" data-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#carousel_image" data-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </a>
+                                    {% endif%}
                                 </div>
                             </div>
+                            {% endif %}
+
+                            {% if tricks.videos is defined %}
                             <div class="col-lg-6 col-md-12">
                                 <div id="carousel-v" class="carousel slide mt-3 mb-2" data-ride="carousel">
                                     <ol class="carousel-indicators">
-                                        {% for video in tricks.media %}
-                                            {% if video.type =='video' %}
+                                        {% for video in tricks.videos %}
                                                 <li data-target=".carousel"  data-slide-to="{{ loop.index - 1 }}"  {% if loop.index != 0 %}class="active" {% endif %}></li>
-                                            {% endif %}
                                         {% endfor %}
                                     </ol>
                                     <div class="carousel-inner toto ">
-                                        {% for video in tricks.media %}
-                                            {% if video.type =='video' %}
+                                        {% for video in tricks.videos %}
                                                 <div class="carousel-item {% if loop.last %} active {% endif %}">
                                                     <iframe class="mediaSize" src="{{ asset(video.path) }}" title="YouTube video player"  allowfullscreen></iframe>
                                                 </div>
-                                            {% endif %}
                                         {% endfor %}
                                     </div>
-                                    <a class="carousel-control-prev" href="#carousel-v" data-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                    </a>
-                                    <a class="carousel-control-next" href="#carousel-v" data-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                    </a>
+                                    {% if tricks.videos|length > 1 %}
+                                        <a class="carousel-control-prev" href="#carousel-v" data-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#carousel-v" data-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </a>
+                                    {% endif %}
                                 </div>
-                        </div>
+                            </div>
+                            {% endif %}
 
                         <!-- End Carousel -->
                         <hr>
@@ -98,7 +101,6 @@
                         <p class="card-text text-justify p-3"><strong>{{ tricks.description }}</strong></p>
                     </div>
                 </div>
-                    {#
                       <!-- Start Comment Add Form -->
                       {% if app.user %}
                           <div class="col-lg-12 px-0 mt-3 mb-3 bg-light">
@@ -119,11 +121,10 @@
                       {% else %}
                           <div class="col-md-12 px-0 mb-3">
                               <div class="comments text-center p-3">
-                                  <p><a href="{{ path('account_register') }}">Inscrivez-vous</a> ou <a href="{{ path('account_login') }}">connectez vous</a> pour commenter cet article</p>
+                                  <p><a href="">Inscrivez-vous</a> ou <a href="">connectez vous</a> pour commenter cet article</p>
                           </div>
                     </div>
                     {% endif %}
-                 #}
                 <!-- Start Comment Add Form -->
 
                 <!-- Start Comments -->
@@ -136,11 +137,11 @@
                                     <div  class="row mb-3 pl-2 bg-light {% if loop.index > 3 %} hidden-tricks" style="display:none;"{% endif %}>
                                         <span class="comment-anchor" id="{{ comment.id }}"></span>
                                         <div class="col-md-3 text-center p-5">
-                                            <img src="{{ asset(comment.author.avatar) }}" class="user-profile" alt="{{ comment.author.fname}}">
+                                            <img src="{{ asset(comment.author.avatar) }}" class="user-profile" style="width: 100%" alt="{{ comment.author.fname}}">
                                         </div>
                                         <div class="col-md-9 p-5">
                                             <p>
-                                                <span><strong> Commenté le {{ comment.dateCreate|date('d/m/Y') }} par <a href="" style="color: #0a0b0d" >{{ comment.author.lname }}</strong></a></span>
+                                                <span><strong> Commenté le {{ comment.dateCreate|date('d/m/Y') }} par <a href="" style="color: #0a0b0d" >{{ comment.author.lname }}</a></strong></span>
                                             </p>
                                             <p>{{ comment.content }}</p>
                                         </div>
@@ -162,4 +163,3 @@
         </div>
     </div>
 {% endblock %}
-

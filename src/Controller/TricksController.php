@@ -2,12 +2,21 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
+use App\Entity\Media;
 use App\Entity\Tricks;
+use App\Form\CommentType;
+use App\Form\TricksUpdateType;
+use App\Repository\CategoryRepository;
+use App\Repository\MediaRepository;
 use App\Repository\TricksRepository;
+use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use mysql_xdevapi\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,11 +25,15 @@ use Symfony\Component\Validator\Constraints\Json;
 
 class TricksController extends AbstractController
 {
-    private $entityManager;
+    private $em;
+    private $slugify;
+    private $path_main;
+    private $path_img;
 
     function __construct( EntityManagerInterface $entityManager)
     {
-        $this->entityManager = $entityManager;
+        $this->em       = $entityManager;
+        $this->slugify  = new Slugify();
     }
     /**
      * @Route("/snowtricks", name="home")
@@ -38,58 +51,169 @@ class TricksController extends AbstractController
     }
 
     /**
-     * @Route("/snowtricks/{slug}", name="tricks_show")
-     * @param                     $slug
+     * @Route("/snowtricks/{id}", name="tricks_show")
+     * @param                     $trick
      *
      * @param SerializerInterface $serializer
      *
      * @return Response
      */
-    public function show($slug, Request $request ): Response
+    public function show(Tricks $trick, Request $request ): Response
     {
-        $tricks = $this->entityManager->getRepository(Tricks::class)->findOneBySlug($slug);
+        $comment = new Comment();
+        $form = $this->createForm(CommentType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setContent($form->get('content')->getData());
+            $comment->setDateCreate(new \DateTime());
+            $comment->setAuthor($this->getUser());
+            $comment->setTricks($trick);
 
+            $this->em->persist($comment);
+            $this->em->flush();
+        }
 
         return $this->render('tricks/show.html.twig', [
-            'tricks' => $tricks,
-            'form'=>'rien'
+            'tricks' => $trick,
+            'form'   => $form->createView()
 
         ]);
     }
     /**
-     * @Route("/snowtricks/{slug}", name="tricks_update")
-     * @param                     $slug
+     * @Route("/modifier-tricks/{id}", name="tricks_update")
+     * @param                     $id
      *
      * @IsGranted("ROLE_USER")
      *
      * @return Response
      */
-    public function update($slug, Request $request ): Response
+    public function update($id, Request $request, CategoryRepository $repoCat ): Response
     {
-        $tricks = $this->entityManager->getRepository(Tricks::class)->findOneBySlug($slug);
+        $categorie = $repoCat->findAll();
+        $tricks = $this->em->getRepository(Tricks::class)->findOneById($id);
+        $main_image = $tricks->getMainImage();
+        $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
 
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /*Gestion de l'upload du main_image' dans la table tricks*/
+            $main_file = $form->get('file')->getData();
+            if(!is_null($main_file)){
+                /*Change path before move file in media directory*/
+                $tricks->setPath($this->getParameter('img_main_directory').'/');
+                $tricks->setOldPath($main_image);
+                $tricks->setMainImage($main_file->getBasename());
+            }
 
-        return $this->render('tricks/show.html.twig', [
+            /*Gestion de l'upload des images'*/
+            foreach ($tricks->getMedia() as $image) {
+                if( $image->getFile() !== null) {
+                    $image->setType('img');
+                    $image->setOldPath( $image->getName());
+                    $image->setPath(substr($image->getFile(), 14, 26));
+                    $image->setPathDirectory($this->getParameter('img_directory') . '/');
+                    $image->setName($image->getPath());
+                }
+            }
+            /*Gestion de l'upload des videos'*/
+            $pathRootVideo = 'https://www.youtube.com/embed/';
+            $goodPath = [];
+            foreach ($tricks->getVideos() as $video){
+                if($video->getpath() !== null) {
+                    $video->setTricks($tricks);
+                    $video->setType('video');
+                    $video->setName('Une video youtube partenaire de Snowtricks');
+                    preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $video->getPath(), $matches);
+                    $video->setPath($pathRootVideo . $matches[1]);
+                }
+            }
+
+            $tricks->setUpdateAt(new \Datetime);
+            $this->em->flush();
+            $this->addFlash('success', 'Votre trick a été modifié avec succés !');
+            return $this->redirectToRoute('tricks_show', ['id' => $tricks->getId()]);
+
+        }
+
+        return $this->render('tricks/update.html.twig', [
             'tricks' => $tricks,
-            'pagination'=>'rien'
+            'form'=>$form->createView(),
+            'errors'=>$form->getErrors()
         ]);
     }
     /**
-     * @Route("/snowtricks/{slug}", name="tricks_delete")
-     * @param                     $slug
+     * @Route("/ajouter-tricks", name="tricks_add")
      *
      * @IsGranted("ROLE_USER")
      *
      * @return Response
      */
-    public function delete($slug, Request $request ): Response
+    public function add( Request $request, CategoryRepository $repoCat ): Response
     {
-        $tricks = $this->entityManager->getRepository(Tricks::class)->findOneBySlug($slug);
+        $categorie = $repoCat->findAll();
+        $tricks = new Tricks();
+        $tricks->setMainImage('default-image.jpg');
+        $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
 
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /*Gestion de l'upload du main_image' dans la table tricks*/
+            $main_file = $form->get('file')->getData();
+            if(!is_null($main_file) && ($tricks->getPath() !== 'default-image.jpg')){
+                /*Change path before move file in media directory*/
+                $tricks->setPath($this->getParameter('img_main_directory').'/');
+                $tricks->setMainImage($main_file->getBasename());
+            }
 
-        return $this->render('tricks/show.html.twig', [
-            'tricks' => $tricks,
-            'pagination'=>'rien'
+            /*Gestion de l'upload des images'*/
+            foreach ($tricks->getMedia() as $image) {
+                $image->setType('img');
+                $image->setPath(substr($image->getFile(), 14, 26));
+                $image->setPathDirectory($this->getParameter('img_directory').'/');
+                $image->setName($image->getPath());
+            }
+
+            /*Gestion de l'upload des videos'*/
+            $pathRootVideo = 'https://www.youtube.com/embed/';
+            $goodPath = [];
+            foreach ($tricks->getVideos() as $video){
+                $video->setTricks($tricks);
+                $video->setType('video');
+                $video->setName('Une video youtube partenaire de Snowtricks');
+                preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $video->getPath(), $matches);
+                $video->setPath($pathRootVideo . $matches[1]);
+            }
+            /*Hydration of tricks with form data*/
+            $tricks->setAuthorId($this->getUser());
+            $tricks->setCreatedAt(new \DateTime());
+            $tricks->setSlug($this->slugify->slugify(strtolower($tricks->getName())));
+            $this->em->persist($tricks);
+
+            $this->em->flush();
+            $this->addFlash('success', 'Votre trick a été ajouté avec succés !');
+            return $this->redirectToRoute('home');
+        }
+        return $this->render('tricks/add.html.twig', [
+            'form'=>$form->createView()
         ]);
+    }
+    /**
+     * @Route("/supprimer-tricks/{id}", name="tricks_delete")
+     * @param                     $trick
+     *
+     * @IsGranted("ROLE_USER")
+     *
+     * @return Response
+     */
+    public function delete(Tricks $trick): Response
+    {
+        $trick->setOldPath($trick->getMainImage());
+        $trick->setPath($this->getParameter('img_main_directory').'/');
+        foreach($trick->getMedia() as $img){
+            $img->setPathDirectory($this->getParameter('img_directory').'/');
+         }
+        $this->em->remove($trick);
+        $this->em->flush();
+        return $this->redirectToRoute('home');
     }
 }

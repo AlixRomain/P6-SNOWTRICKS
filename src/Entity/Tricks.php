@@ -6,10 +6,12 @@ use App\Repository\TricksRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TricksRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
 class Tricks
 {
@@ -33,7 +35,7 @@ class Tricks
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\Length(min=25, minMessage="La description doit être plus longue", allowEmptyString="false")
+     * @Assert\Length(min=0, minMessage="Vous devez donner un nom à votre tricks", allowEmptyString="false")
      */
     private $description;
 
@@ -54,6 +56,7 @@ class Tricks
 
     /**
      * @ORM\Column(type="string", length=255)
+     *
      */
     private $main_image;
 
@@ -63,7 +66,7 @@ class Tricks
     private $category;
 
     /**
-     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="tricks")
+     * @ORM\OneToMany(targetEntity=Media::class, mappedBy="tricks",cascade={"persist","remove"})
      */
     private $media;
 
@@ -72,11 +75,49 @@ class Tricks
      */
     private $comments;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Video::class, mappedBy="tricks",cascade={"persist","remove"})
+     */
+    private $videos;
+
+    private $path;
+
+
+    /**
+     * @Assert\Image(
+     *      maxSize = "1M",
+     *      maxSizeMessage = "L'image principal ne doit pas dépasser 1 Mo",
+     *      minWidth="600",
+     *      minWidthMessage="L'image principal doit faire plus de 600 px",
+     *      mimeTypes={"image/jpeg","image/jpg"},
+     *      mimeTypesMessage="L'extension ({{ type }}) est invalide. Seul l'extension {{ types }} est acceptée."
+     * )
+     */
+    private $file;
+
+    private $old_path;
+
+    /**
+     * @return mixed
+     */
+    public function getOldPath()
+    {
+        return $this->old_path;
+    }
+
+    /**
+     * @param mixed $old_path
+     */
+    public function setOldPath($old_path): void
+    {
+        $this->old_path = $old_path;
+    }
     public function __construct()
     {
         $this->category = new ArrayCollection();
         $this->media = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -168,6 +209,18 @@ class Tricks
         return $this;
     }
 
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    public function setPath($path)
+    {
+        $this->path = $path;
+
+        return $this;
+    }
+
     /**
      * @return Collection|Category[]
      */
@@ -236,7 +289,6 @@ class Tricks
             $this->comments[] = $comment;
             $comment->setTricks($this);
         }
-
         return $this;
     }
 
@@ -248,7 +300,76 @@ class Tricks
                 $comment->setTricks(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection|Video[]
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): self
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos[] = $video;
+            $video->setTricks($this);
+        }
 
         return $this;
     }
+
+    public function removeVideo(Video $video): self
+    {
+        if ($this->videos->removeElement($video)) {
+            // set the owning side to null (unless already changed)
+            if ($video->getTricks() === $this) {
+                $video->setTricks(null);
+            }
+        }
+        return $this;
+    }
+
+
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PreFlush()
+     */
+    public function handleFile()
+    {
+        if ($this->file === null) {
+            return;
+        }
+        // Delete image from the server if update
+        if ($this->id && $this->main_image !== 'default-image.jpg' && file_exists($this->path.$this->old_path)) {
+            unlink( $this->path.$this->old_path);
+        }
+        // Moving image into the image repository
+        $this->file->move($this->path, $this->main_image);
+    }
+
+    /**
+     * @ORM\PreRemove()
+     */
+    public function handleFileDelete()
+    {
+        // Delete image from the server if delete the trick && if file with this name exist
+        if ($this->id && $this->main_image !== 'default-image.jpg' && file_exists($this->path.$this->old_path)) {
+            unlink( $this->path.$this->old_path);
+        }
+    }
 }
+

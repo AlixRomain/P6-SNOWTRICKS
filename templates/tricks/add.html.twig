@@ -1,0 +1,116 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Ajout d'un trick{% endblock %}
+
+{% form_theme form _self %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center  mb-5">Ajouter un Tricks</h1>
+    {{ form_start(form) }}
+             <div class="effetBtn" style="width: 100%">
+             <div class="col  mb-5">
+                 <img id="mainImage" src="/asset/media/main{{ asset(form.vars.data.mainImage) }}" width="100%" alt="form.vars.data.mainImage">
+            </div>
+            <p>
+                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Modifier l'image
+                  </button>
+                  {{ form_errors(form.file) }}
+            </p>
+            <div class="collapse  mb-5" id="collapseExample">
+                <div class="card card-body">
+                    <div>
+                         <p class="mb-5">Image principale</p>
+                         {{ form_row(form.file) }}
+                     </div>
+                 </div>
+            </div>
+        </div>
+    <div class="row text-center">
+        <div class="col">
+            <div class="p-3 mb-2 ">
+                <div class="row justify-content-between">
+                    <div class="col-md-6  align-items-center effetBtn"> {{ form_row(form.name) }}</div>
+                    <div class="col-md-6 effetBtn">{{ form_row(form.description) }}</div>
+                </div>
+                <hr>
+                <div class="row justify-content-between">
+                    <div class="col effetBtn">
+                         <p>Cliquez pour ajouter une à trois catégorie</p>
+                         <div class="progress mb-3">
+                                <div id="barCategory" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" ></div>
+                         </div>
+                        {{ form_row(form.category) }}
+                    </div>
+                    <input type="hidden" id="category-counter" value="0">
+                    <span class="counter-category text-danger"></span>
+                </div>
+                <hr>
+                <div class="form-row">
+                    <div class="form-group col-md-6 text-center effetBtn">
+                        <p>Cliquez pour ajouter une image</p>
+                        <div class="progress mb-5">
+                             <div id="barImage" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" ></div>
+                        </div>
+                        {{ form_widget(form.media) }}
+                        <input type="hidden" id="image-counter" value="0">
+                        <div class="form-group mt-2">
+                            <button type="button" class="btn btn-secondary" id="add-image">Ajouter une image</button>
+                            <span class="counter-image text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="form-group col-md-6 text-center effetBtn">
+                        <p>Cliquez pour ajouter une video
+                            <span data-toggle="popover" class="apoper " title="Type de video " data-placement="left" data-content="And here's some amazing content. It's very engaging. Right?"> ?
+                            </span>
+                            <div class="progress mb-5">
+                             <div id="barVideo" class="progress-bar progress-bar-striped progress-bar-animated " role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" ></div>
+                        </div>
+                        </p>
+                                            {{ form_widget(form.videos) }}
+                        <input type="hidden" id="video-counter" value="0">
+                        <div class="form-group mt-2">
+                            <button type="button" class="btn btn-secondary" id="add-video">Ajouter une video</button>
+                            <span class="counter-video text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <button type="submit" class="btn btn-success">Ajoute ce tricks</button>
+            </div>
+        </div>
+        {{ form_end(form) }}
+    </div>
+    {% endblock %}
+
+{% block _tricks_update_image_entry_widget %}
+    <div class="row block-image"  id="block_{{id}}">
+        <div class="col-md-6 offset-md-2">
+            <div class="form-group">
+                {{ form_errors(form.file) }}
+                {{ form_widget(form.file) }}
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" data-action="delete" data-target="#block_{{id}}" class="btn btn-white btn-trick"><i class="text-danger fas fa-minus-circle"></i></button>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+{% endblock %}
+
+{% block _tricks_update_videos_entry_widget %}
+    <div class="row block-image"  id="block_{{id}}">
+        <div class="col-md-6 offset-md-2">
+            <div class="form-group">
+                {{ form_errors(form.path) }}
+                {{ form_widget(form.path) }}
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="button" data-action="delete" data-target="#block_{{id}}" class="btn btn-white btn-trick"><i class="text-danger fas fa-minus-circle"></i></button>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+{% endblock %}
