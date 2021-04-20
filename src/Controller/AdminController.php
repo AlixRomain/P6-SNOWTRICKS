@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminController extends AbstractController
 {
     /**
-     * @Route("/admin", name="home_admin")
+     * @Route("/admin-dashboard", name="home_admin")
      */
     public function index(TricksRepository $repoTrick, CommentRepository $repoComment): Response
     {

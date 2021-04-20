@@ -66,7 +66,7 @@ class AppFixtures extends Fixture
                 ->setRoles($roleUser)
                 ->setRgpd(1)
                 ->setAvatar('asset/media/avatar/profil_'.$this->faker->numberBetween(1,20).'.jpg')
-                ->setDateCreate($this->faker->dateTimeInInterval( '-2 years', 'now'))
+                ->setDateCreate($this->faker->dateTimeThisYear( 'now'))
                 ->setDevise('Mr '.$adherent->getFname().' pour vous servir !')
                 ->setSlug($this->slug->slugify(strtolower($adherent->getFname().$adherent->getLname())))
                 ->setEmail($adherent->getFname().'-'.$adherent->getlname().'@snowtrick.com')

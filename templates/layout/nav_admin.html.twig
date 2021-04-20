@@ -13,12 +13,12 @@
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{{ path('admin_tricks') }}">Voir tous les tricks</a>
                             <a class="dropdown-item" href="{{  path('admin_comment') }}">Voir tous les commentaires</a>
-                            <a class="dropdown-item" href="#">Voir tous les utilisateurs</a>
+                            <a class="dropdown-item" href="{{ path('all_users_admin') }}">Voir tous les utilisateurs</a>
                         </div>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Votre Profil</a>
+                    <a class="nav-link" href="{{ path("profil_user", {'id' : app.user.id}) }}">Votre Profil</a>
                 </li>
                  <li class="nav-item">
                     <a class="nav-link" href="{{ path('user_tricks') }}">Vos tricks</a>

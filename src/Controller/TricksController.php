@@ -3,25 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
-use App\Entity\Media;
 use App\Entity\Tricks;
 use App\Form\CommentType;
 use App\Form\TricksUpdateType;
 use App\Repository\CategoryRepository;
-use App\Repository\MediaRepository;
 use App\Repository\TricksRepository;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use mysql_xdevapi\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Constraints\Json;
 
 class TricksController extends AbstractController
 {
@@ -83,16 +78,19 @@ class TricksController extends AbstractController
     }
     /**
      * @Route("/modifier-tricks/{id}", name="tricks_update")
-     * @param                     $id
-     *
+     * @param                     $trick
+     * @Security(
+     *      "user === trick.getAuthorId() || is_granted('ROLE_ADMIN')",
+     *      message = "Vous n'avez pas les droits pour modifier ce tricks"
+     * )
      * @IsGranted("ROLE_USER")
      *
      * @return Response
      */
-    public function update($id, Request $request, CategoryRepository $repoCat ): Response
+    public function update(Tricks $trick, Request $request, CategoryRepository $repoCat ): Response
     {
         $categorie = $repoCat->findAll();
-        $tricks = $this->em->getRepository(Tricks::class)->findOneById($id);
+        $tricks = $this->em->getRepository(Tricks::class)->findOneById($trick->getId());
         $main_image = $tricks->getMainImage();
         $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
 
@@ -202,7 +200,10 @@ class TricksController extends AbstractController
     /**
      * @Route("/supprimer-tricks/{id}", name="tricks_delete")
      * @param                     $trick
-     *
+     * @Security(
+     *      "user === tricks.getAuthorId() || is_granted('ROLE_ADMIN')",
+     *      message = "Vous n'avez pas les droits pour supprimer ce tricks !"
+     * )
      * @IsGranted("ROLE_USER")
      *
      * @return Response

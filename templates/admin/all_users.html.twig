@@ -4,23 +4,24 @@
 
 {% block content %}
     <div class="container ">
-        <h4 class="card-title">Tous vos commentaires</h4>
-        <h6 class="card-subtitle">Historique de tous vos commentaires</h6>
+        <h4 class="card-title">Tous les utilisateurs</h4>
+        <h6 class="card-subtitle">Vue d'ensemble de tous les utilisateurs de Snowtricks</h6>
     </div>
     <div class="container d-flex justify-content-center mt-100 mb-100">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div id="comments-title" class="comment-widgets m-b-20 row">
-                        {% for comment in comments %}
+                        {% for user in users %}
                             <div class="comment   hidden-comments col-lg-6" style="display: none">
-                                <div class="d-flex flex-row comment-row " >
-                                    <div class="p-3"><span class="round"><img src="{{ asset(comment.author.avatar) }}" alt="{{ asset(comment.author.lname) }}" width="50"></span></div>
+                                <div class="d-flex  comment-row" >
+                                    <div class="p-3"><span class="round"><img src="{{ asset(user.avatar) }}" alt="{{ asset(user.lname) }}" width="50"></span></div>
                                     <div class="comment-text w-100">
-                                        <h5 style="color: white">{{ comment.author.lname }} {{ comment.author.fname }}</h5>
+                                        <h5 style="color: white">{{ user.lname }} {{ user.fname }}</h5>
+                                        <span style="color: #bdc6cf" class="date mr-2">{{ user.email }} </span>
                                         <div class="comment-footer"> <span class="date mr-2">
-                                        il y a
-                                    {% set difference = date(comment.dateCreate|date('Y/m/d')).diff(date('now'|date('Y/m/d'))) %}
+                                        Utilisateur depuis
+                                    {% set difference = date(user.dateCreate|date('Y/m/d')).diff(date('now'|date('Y/m/d'))) %}
                                                 {% set leftDays = difference.days %}
                                                 {% if leftDays == 1 %}
                                                     1 jour
@@ -30,20 +31,14 @@
                                                     {{ leftDays }} jours
                                                 {% endif %}
                                     </span>
-                                            <span class="label label-success">Approuvé</span>
+                                            <span class="label label-success">Actif</span>
                                             <span class="action-icons">
-                                        <a href="{{ path("update_comment", {'id' : comment.id}) }}" data-abc="true" alt="Modifier le commentaire">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-                                        <a href="#" data-abc="true">
-                                            <i class="fa fa-rotate-right"></i>
-                                        </a>
-                                        <a href="{{ path("delete_comment", {'id' : comment.id})}}" data-abc="true" alt="Supprimer le commentaire">
-                                            <i class="fa fa-trash"></i>
+                                        <a href="{{ path("user_delete", {'id' : user.id})}}" data-abc="true" class="ml-5 trash" alt="Supprimer cet utilisateur de la plateforme snowtricks">
+                                            <i class="fa fa-trash fa-2x"></i>
                                         </a>
                                     </span>
                                         </div>
-                                        <p class="m-b-5 m-t-10"> {{ comment.content }}</p>
+                                        <p class="m-b-5 m-t-10"> {{ user.devise }}</p>
                                     </div>
                                 </div>
                             </div>

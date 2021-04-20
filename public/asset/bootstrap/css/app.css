@@ -1,5 +1,7 @@
 /*-------------DEBUT CSS COMMENTAIRES -----------------------*/
-
+.trash:hover{
+    color: red!important;
+}
 .card-no-border .card {
     border: 0px;
     border-radius: 4px;
@@ -9,13 +11,16 @@
 
 .comment:nth-child(2n + 2) .comment-row{
     background: #5c636a;
+
     overflow: hidden;
 }
 .comment:nth-child(2n + 2) .comment-row:hover{
     background: #4f5050;
     overflow: hidden;
 }
-
+.comment-row{
+    width: 100%;
+}
 
 .comment-widgets .comment-row:hover {
     background: rgba(0, 0, 0, 0.02);

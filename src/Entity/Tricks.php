@@ -50,7 +50,7 @@ class Tricks
     private $update_at;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
      */
     private $slug;
 
@@ -71,7 +71,7 @@ class Tricks
     private $media;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="tricks", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="tricks", orphanRemoval=true,cascade={"persist","remove"})
      */
     private $comments;
 
