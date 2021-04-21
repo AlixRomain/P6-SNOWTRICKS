@@ -42,7 +42,7 @@ class TricksController extends AbstractController
 
        $tricks =  $this->tricksRepo->findBy([],['created_at'=> 'desc']);
 
-        return $this->render('tricks/tricks.html.twig', [
+        return $this->render('tricks.html.twig', [
             'tricks' => $tricks,
         ]);
     }
@@ -135,7 +135,7 @@ class TricksController extends AbstractController
 
         }
 
-        return $this->render('tricks/update.html.twig', [
+        return $this->render('admin/admin_tricks/update.html.twig', [
             'tricks' => $tricks,
             'form'=>$form->createView(),
             'errors'=>$form->getErrors()
@@ -193,7 +193,7 @@ class TricksController extends AbstractController
             $this->addFlash('success', 'Votre trick a été ajouté avec succés !');
             return $this->redirectToRoute('user_tricks');
         }
-        return $this->render('tricks/add.html.twig', [
+        return $this->render('admin/admin_tricks/add.html.twig', [
             'form'=>$form->createView()
         ]);
     }
@@ -231,7 +231,7 @@ class TricksController extends AbstractController
     {
         $tricks = $this->tricksRepo->findBy(['author_id' => $this->getUser()], ['created_at'=> 'desc']);
 
-        return $this->render('admin/all_user_tricks.html.twig', [
+        return $this->render('admin/admin_tricks/all_user_tricks.html.twig', [
             'tricks' => $tricks,
         ]);
     }
@@ -247,7 +247,7 @@ class TricksController extends AbstractController
     public function findAllTricks(): Response
     {
         $tricks = $this->tricksRepo->findAll();
-        return $this->render('admin/all_tricks.html.twig', [
+        return $this->render('admin/admin_tricks/all_tricks.html.twig', [
             'tricks' => $tricks,
         ]);
     }

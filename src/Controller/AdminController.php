@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\CommentRepository;
 use App\Repository\TricksRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,6 +13,7 @@ class AdminController extends AbstractController
 {
     /**
      * @Route("/admin-dashboard", name="home_admin")
+     * @IsGranted("ROLE_USER")
      */
     public function index(TricksRepository $repoTrick, CommentRepository $repoComment): Response
     {

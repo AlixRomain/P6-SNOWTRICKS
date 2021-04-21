@@ -40,7 +40,7 @@ class UserController extends AbstractController
     {
         $form = $this->createForm(UserType::class, $user);
         $user = $this->userRepo->findById($user->getId());
-        return $this->render('admin/udpate_user.html.twig', [
+        return $this->render('admin/admin_user/udpate_user.html.twig', [
             'user' => $user,
             'form' => $form->createView()
         ]);
@@ -53,7 +53,7 @@ class UserController extends AbstractController
     public function findAll(): Response
     {
         $user = $this->userRepo->findBy(['roles' => 'ROLE_USER']);
-        return $this->render('admin/all_users.html.twig', [
+        return $this->render('admin/admin_user/all_users.html.twig', [
             'users' => $user,
         ]);
     }

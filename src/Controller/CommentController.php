@@ -29,7 +29,7 @@ class CommentController extends AbstractController
     public function allComments(): Response
     {
         $comments = $this->commentRepo->findBy([],['date_create' => 'desc']);
-        return $this->render('admin/all_comments.html.twig', [
+        return $this->render('admin/admin_comment/all_comments.html.twig', [
             'comments' => $comments,
         ]);
     }
@@ -40,7 +40,7 @@ class CommentController extends AbstractController
     public function allUserComments(): Response
     {
         $comments = $this->commentRepo->findBy(['author' => $this->getUser()],['date_create' => 'desc']);
-        return $this->render('admin/all_user_comments.html.twig', [
+        return $this->render('admin/admin_comment/all_user_comments.html.twig', [
             'comments' => $comments,
         ]);
     }
@@ -59,7 +59,7 @@ class CommentController extends AbstractController
             $this->addFlash('success', 'Le commentaire a été mis à jour.');
             return $this->redirectToRoute('admin_comment');
         }
-        return $this->render('admin/update_comment.html.twig', [
+        return $this->render('admin/admin_comment/update_comment.html.twig', [
             'comment' => $comment,
             'form' => $form->createView(),
         ]);
