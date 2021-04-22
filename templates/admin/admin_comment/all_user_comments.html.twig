@@ -13,10 +13,14 @@
                 <div class="card">
                     <div id="comments-title" class="comment-widgets m-b-20 row">
                         {% for comment in comments %}
-                            <div class="comment   hidden-comments col-lg-6" style="display: none">
-                                <div class="d-flex flex-row comment-row " >
-                                    <div class="p-3"><span class="round"><img src="{{ asset(comment.author.avatar) }}" alt="{{ asset(comment.author.lname) }}" width="50"></span></div>
-                                    <div class="comment-text w-100">
+                            <div class="comment  hidden-comments col-lg-6 btn" style="display: none">
+                                <div class="row p-3" >
+                                    <div class="p-3 col-md-3 mb-3" >
+                                        <span class="round">
+                                            <img src="{{ asset(comment.author.avatar) }}" alt="{{ asset(comment.author.lname) }}" width="50">
+                                        </span>
+                                    </div>
+                                    <div class="comment-text w-100 col-md-9">
                                         <h5 style="color: white">{{ comment.author.lname }} {{ comment.author.fname }}</h5>
                                         <div class="comment-footer">
                                             <span class="date mr-2">

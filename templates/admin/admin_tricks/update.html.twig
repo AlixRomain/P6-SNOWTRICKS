@@ -9,8 +9,8 @@
     <h1 id="titre" class="text-center  mb-5">Modifier un Tricks</h1>
     {{ form_start(form) }}
         <div class="effetBtn" style="width: 100%">
-             <div class="col  mb-5">
-                 <img id="mainImage" src="/asset/media/main{{ asset(form.vars.data.mainImage) }}" width="100%" alt="form.vars.data.mainImage">
+             <div class="col mb-5">
+                 <img id="mainImage" src="/asset/media/main{{ asset(form.vars.data.mainImage) }}" width="100%" alt="form.vars.data.mainImage" style="border-radius: 3px">
             </div>
             <p>
                  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
@@ -48,7 +48,7 @@
                     <span class="counter-category text-danger"></span>
                 </div>
                 <hr>
-                <div class="form-row">
+                <div class="row">
                     <div class="form-group col-md-6 text-center effetBtn">
                         <p>Cliquez pour ajouter une image</p>
                         <div class="progress mb-5">

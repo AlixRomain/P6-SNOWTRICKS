@@ -9,29 +9,35 @@
     box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05)
 }
 
-.comment:nth-child(2n + 2) .comment-row{
+.comment:nth-child(2n + 2) {
     background: #5c636a;
-
     overflow: hidden;
 }
-.comment:nth-child(2n + 2) .comment-row:hover{
+.comment:hover{
     background: #4f5050;
     overflow: hidden;
 }
+.comment:hover  h5{
+   color: #F5F5F5;
+}
+
 .comment-row{
     width: 100%;
 }
 
-.comment-widgets .comment-row:hover {
+.comment-widgets:hover {
     background: rgba(0, 0, 0, 0.02);
     cursor: pointer
 }
 
-.comment-widgets .comment-row {
+.comment-widgets {
     border-bottom: 1px solid rgba(120, 130, 140, 0.13);
-    padding: 15px
+    padding: 0 15px
 }
 
+.comment-text{
+    text-align: left!important;
+}
 .comment-text:hover {
     visibility: hidden
 }

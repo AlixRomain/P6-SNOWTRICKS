@@ -8,108 +8,109 @@
     <div class="container m-auto row ">
         <h1 id="titre" class="col-lg-12 mb-2">Dashboard administrateur</h1>
         <h6 id="titre" class="col-lg-12 mb-5">Vue d'ensemble de votre activité sur Snowtricks</h6>
-        <div class="col-6">
-            <div class="effetBtn" style="width: 100%">
-                <div class="row p-3">
-                    <div class="col-md-6 mb-5 text-left">
-                        <h5 style="color: white;">{{ app.user.lname }} {{ app.user.fname }} <br><span style="color: #41464b;" class="date mr-2">{{ app.user.devise }} </span></h5>
-                        <p style="color: #222426;" class="date mr-2">{{ app.user.email }} </p>
-                        <div class="comment-footer">
-                            <p class="date mr-2 mb-3">Utilisateur depuis
-                                {% set difference = date(app.user.dateCreate|date('Y/m/d')).diff(date('now'|date('Y/m/d'))) %}
-                                {% set leftDays = difference.days %}
-                                {% if leftDays == 1 %}
-                                    1 jour
-                                {% elseif leftDays == 0 %}
-                                    moins de 24 heures
+        <div class="row">
+            <div class="col-md-6">
+                <div class="effetBtn" style="width: 100%">
+                    <div class="row p-3">
+                        <div class="col-md-6 mb-5 text-left">
+                            <h5 style="color: white;">{{ app.user.lname }} {{ app.user.fname }} <br><span style="color: #41464b;" class="date mr-2">{{ app.user.devise }} </span></h5>
+                            <p style="color: #222426;" class="date mr-2">{{ app.user.email }} </p>
+                            <div class="comment-footer">
+                                <p class="date mr-2 mb-3">Utilisateur depuis
+                                    {% set difference = date(app.user.dateCreate|date('Y/m/d')).diff(date('now'|date('Y/m/d'))) %}
+                                    {% set leftDays = difference.days %}
+                                    {% if leftDays == 1 %}
+                                        1 jour
+                                    {% elseif leftDays == 0 %}
+                                        moins de 24 heures
+                                    {% else %}
+                                        {{ leftDays }} jours
+                                    {% endif %}
+                                </p>
+                                {% if stats[0] > 0 or stats[1] > 0  %}
+                                    <span class="label label-success mt-3">Actif pour la communauté</span>
+                                    {% if stats[0] > 0 %}
+                                        <p> Tricks publiés : {{ stats[0] }}</p>
+                                    {% else %}
+                                        <span class="label label-danger">Aucun Tricks publié</span>
+                                    {% endif %}
+
+                                    {% if stats[1] > 0 %}
+                                        <p> Commentaires postés : {{ stats[1] }}</p>
+                                    {% else %}
+                                        <span class="label label-danger">Aucun commentaire publié</span>
+                                    {% endif %}
                                 {% else %}
-                                    {{ leftDays }} jours
-                                {% endif %}
-                            </p>
-                            {% if stats[0] > 0 or stats[1] > 0  %}
-                                <span class="label label-success mt-3">Actif pour la communauté</span>
-                                {% if stats[0] > 0 %}
-                                    <p> Tricks publiés : {{ stats[0] }}</p>
-                                {% else %}
-                                    <span class="label label-danger">Aucun Tricks publié</span>
+                                    <span class="label label-danger">Aucune activité</span>
                                 {% endif %}
 
-                                {% if stats[1] > 0 %}
-                                    <p> Commentaires postés : {{ stats[1] }}</p>
-                                {% else %}
-                                    <span class="label label-danger">Aucun commentaire publié</span>
-                                {% endif %}
-                            {% else %}
-                                <span class="label label-danger">Aucune activité</span>
-                            {% endif %}
-
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <img id="mainImage" class="avatar" src="/asset/media/avatar{{ asset(app.user.avatar) }}" alt="Profil de {{ app.user.lname }}">
+                        <div class="col-md-6 mb-3">
+                            <img id="mainImage" class="avatar" src="/asset/media/avatar{{ asset(app.user.avatar) }}" alt="Profil de {{ app.user.lname }}">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row col-6">
-           <div class="tricks">
-               <a href="{{ path('user_tricks') }}">
-                   <h6 id="titre" class="col-lg-12 mb-2 effetBtn">Vos dernier tricks publiés</h6>
-               </a>
-               <div class="row" id="tricks-title">
-                   {% for trick in tricks %}
-                       <div  class=" col-md-6 ">
-                           <div class="card card-tricks mb-3  hidden-tricks" style="display:none">
-                               <a  href="{{ path("tricks_show", {'slug' : trick.slug}) }}" >
-                                   <img class="img-fluid card-img-top" style="min-height: 168px" src="/asset/media/main{{ asset(trick.Mainimage) }}" alt="{{ trick.name }}">
-                               </a>
-                               <div class="card-body">
-                                   <div class="card-link text-center mb-3">
-                                       <a  class="btn btn-outline-primary mt-3 block" href="{{ path("tricks_show", {'slug' : trick.slug}) }}" >{{ trick.name }}</a>
-                                   </div>
-                                   <div class="card-link text-center row">
-                                       {% for cat in trick.category %}
-                                           <div class="{% if app.user %}hoverAuth{% else %} hover {% endif %} ">
+            <div class="col-md-6">
+                <div class="tricks">
+                    <a href="{{ path('user_tricks') }}">
+                        <h6 id="titre" class="col-lg-12 mb-2 effetBtn">Vos dernier tricks publiés</h6>
+                    </a>
+                    <div class="row" id="tricks-title">
+                        {% for trick in tricks %}
+                            <div  class=" col-md-6 ">
+                                <div class="card card-tricks mb-3  hidden-tricks" style="display:none">
+                                    <a  href="{{ path("tricks_show", {'slug' : trick.slug}) }}" >
+                                        <img class="img-fluid card-img-top" style="min-height: 168px" src="/asset/media/main{{ asset(trick.Mainimage) }}" alt="{{ trick.name }}">
+                                    </a>
+                                    <div class="card-body">
+                                        <div class="card-link text-center mb-3">
+                                            <a  class="btn btn-outline-primary mt-3 block" href="{{ path("tricks_show", {'slug' : trick.slug}) }}" >{{ trick.name }}</a>
+                                        </div>
+                                        <div class="card-link text-center row">
+                                            {% for cat in trick.category %}
+                                                <div class="{% if app.user %}hoverAuth{% else %} hover {% endif %} ">
                                      <span class="badge badge-pill badge-warning mr-1">
                                     {{ cat.name}}
                                      </span>
-                                               <p class="text-warning mouseHover mouseHoverAuth"><strong>{{ cat.description}}</strong></p>
-                                           </div>
-                                       {% endfor %}
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-                   {% endfor %}
-           </div>
-            <div class="comment mb-5">
-                <a href="{{  path('user_comment') }}">
-                    <h6 class="effetBtn col-lg-12 mb-2 "> Vos dernier commentaires</h6>
-                </a>
-                {% for comment in comments %}
-                        <div class="d-flex flex-row comment-row btn text-left mb-1" style="background: #32383e">
-                            <div class="comment-text w-100">
-                                <h5 style="color: white">{{ comment.author.lname }} {{ comment.author.fname }}</h5>
-                                <div class="comment-footer"> <span class="date mr-2">
+                                                    <p class="text-warning mouseHover mouseHoverAuth"><strong>{{ cat.description}}</strong></p>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="comment mb-5">
+                        <a href="{{  path('user_comment') }}">
+                            <h6 class="effetBtn col-lg-12 mb-2 "> Vos dernier commentaires</h6>
+                        </a>
+                        {% for comment in comments %}
+                            <div class="d-flex  comment-row btn text-left mb-1" style="background: #32383e">
+                                <div class="comment-text w-100">
+                                    <h5 style="color: white">{{ comment.author.lname }} {{ comment.author.fname }}</h5>
+                                    <div class="comment-footer"> <span class="date mr-2">
                                         il y a
                                     {% set difference = date(comment.dateCreate|date('Y/m/d')).diff(date('now'|date('Y/m/d'))) %}
-                                        {% set leftDays = difference.days %}
-                                        {% if leftDays == 1 %}
-                                            1 jour
-                                        {% elseif leftDays == 0 %}
-                                            moins de 24 heures
-                                        {% else %}
-                                            {{ leftDays }} jours
-                                        {% endif %}
+                                            {% set leftDays = difference.days %}
+                                            {% if leftDays == 1 %}
+                                                1 jour
+                                            {% elseif leftDays == 0 %}
+                                                moins de 24 heures
+                                            {% else %}
+                                                {{ leftDays }} jours
+                                            {% endif %}
                                     </span>
-                                    <span class="label label-success">Approuvé</span>
+                                        <span class="label label-success">Approuvé</span>
+                                    </div>
+                                    <p class="m-b-5 m-t-10"> {{ comment.content }}</p>
                                 </div>
-                                <p class="m-b-5 m-t-10"> {{ comment.content }}</p>
                             </div>
-                        </div>
-                {% endfor %}
-            </div>
+                        {% endfor %}
+                    </div>
+                </div>
         </div>
     </div>
-</div>
 {% endblock %}
