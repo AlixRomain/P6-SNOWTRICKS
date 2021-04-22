@@ -7,6 +7,7 @@ use App\Entity\Tricks;
 use App\Form\CommentType;
 use App\Form\TricksType;
 use App\Repository\CategoryRepository;
+use App\Repository\CommentRepository;
 use App\Repository\TricksRepository;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,12 +24,14 @@ class TricksController extends AbstractController
     private $em;
     private $slugify;
     private $tricksRepo;
+    private $commentRepo;
 
-    function __construct( EntityManagerInterface $entityManager, TricksRepository $tricksRepo)
+    function __construct( EntityManagerInterface $entityManager, TricksRepository $tricksRepo, CommentRepository $commentRepo)
     {
         $this->em       = $entityManager;
         $this->slugify  = new Slugify();
         $this->tricksRepo = $tricksRepo;
+        $this->commentRepo = $commentRepo;
     }
     /**
      * @Route("/snowtricks", name="home")
@@ -55,6 +58,7 @@ class TricksController extends AbstractController
      */
     public function show(Tricks $trick, Request $request ): Response
     {
+        $comments = $this->commentRepo->findBy(['tricks' => $trick],['date_create'=>'desc']);
         $comment = new Comment();
         $form = $this->createForm(CommentType::class);
         $form->handleRequest($request);
@@ -66,11 +70,13 @@ class TricksController extends AbstractController
             $this->addFlash('success', 'Yes! Votre commentaire à bien été pris en compte.');
             $this->em->persist($comment);
             $this->em->flush();
+            return $this->redirectToRoute('tricks_show', ['slug' => $trick->getSlug() ]);
         }
 
         return $this->render('tricks/show.html.twig', [
             'tricks' => $trick,
-            'form'   => $form->createView()
+            'form'   => $form->createView(),
+            'comments'=> $comments
 
         ]);
     }

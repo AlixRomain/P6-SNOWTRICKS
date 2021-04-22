@@ -18,9 +18,10 @@
                                     <div class="p-3"><span class="round"><img src="{{ asset(comment.author.avatar) }}" alt="{{ asset(comment.author.lname) }}" width="50"></span></div>
                                     <div class="comment-text w-100">
                                         <h5 style="color: white">{{ comment.author.lname }} {{ comment.author.fname }}</h5>
-                                        <div class="comment-footer"> <span class="date mr-2">
-                                        il y a
-                                    {% set difference = date(comment.dateCreate|date('Y/m/d')).diff(date('now'|date('Y/m/d'))) %}
+                                        <div class="comment-footer">
+                                            <span class="date mr-2">
+                                                 il y a
+                                                {% set difference = date(comment.dateCreate|date('Y/m/d')).diff(date('now'|date('Y/m/d'))) %}
                                                 {% set leftDays = difference.days %}
                                                 {% if leftDays == 1 %}
                                                     1 jour
@@ -29,19 +30,19 @@
                                                 {% else %}
                                                     {{ leftDays }} jours
                                                 {% endif %}
-                                    </span>
+                                            </span>
                                             <span class="label label-success">Approuvé</span>
                                             <span class="action-icons">
-                                        <a href="{{ path("update_comment", {'id' : comment.id}) }}" data-abc="true" alt="Modifier le commentaire">
-                                            <i class="fa fa-pencil"></i>
-                                        </a>
-                                        <a href="#" data-abc="true">
-                                            <i class="fa fa-rotate-right"></i>
-                                        </a>
-                                        <a class="confSupCom" href="{{ path("delete_comment", {'id' : comment.id})}}" data-value="{{ comment.content }}" data-abc="true" alt="Supprimer le commentaire">
-                                            <i class="fa fa-trash"></i>
-                                        </a>
-                                    </span>
+                                                <a href="{{ path("update_comment", {'id' : comment.id}) }}" data-abc="true" alt="Modifier le commentaire">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                                <a href="#" data-abc="true">
+                                                    <i class="fa fa-rotate-right"></i>
+                                                </a>
+                                                <a class="confSupCom" href="{{ path("delete_comment", {'id' : comment.id})}}" data-value="{{ comment.content }}" data-abc="true" alt="Supprimer le commentaire">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            </span>
                                         </div>
                                         <p class="m-b-5 m-t-10"> {{ comment.content }}</p>
                                     </div>

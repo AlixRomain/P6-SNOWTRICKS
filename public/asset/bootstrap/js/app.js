@@ -49,6 +49,7 @@ $(function() {
   //gestion de la vues des commantaires
   var c = 10 ;
   var comments = $('#comments-title div.comment').length;
+  console.log(comments);
   $(document).ready(function() {
     let progress = ((10 * 100) / comments);
     $("#tricksBarr").css({'width': progress +'%'});
@@ -93,12 +94,12 @@ $(function() {
   })
 
   function barrHidden(min,max){
-    if(min < max){
+    if(min <= max){
       $(".module_progress_comments").css({'display': 'none',});
     }
   }
 function barrHiddenTricks(min,max){
-    if(min < max){
+    if(min <= max){
       $(".module_progress_tricks").css({'display': 'none',});
     }
   }
@@ -204,7 +205,6 @@ function barrHiddenTricks(min,max){
 
   function displayCounter() {
     const countCategory = +$("#tricks_category option:selected").length;
-    console.log(+$("#tricks_category option:selected").length);
     if (countCategory >= 3) {
       $("#tricks_category ").find('option:not(:selected)').hide();
     } else {
