@@ -3,7 +3,6 @@ $(function() {
   //gestion de la vues des tricks
   var j = 4 ;
   var vignettes = $('#tricks-title div.trick').length;
-  console.log(vignettes);
   $(document).ready(function() {
     let progress = ((4 * 100) / vignettes);
     $("#tricksBarr").css({'width': progress +'%'});
@@ -94,7 +93,6 @@ $(function() {
   })
 
   function barrHidden(min,max){
-    console.log(min)
     if(min < max){
       $(".module_progress_comments").css({'display': 'none',});
     }
@@ -175,13 +173,13 @@ function barrHiddenTricks(min,max){
   /*  /* Get path File and replace placeholder input with it */
 
   /* --------------------------------------------------------------------------------- */
-  $(document).on('load', '#tricks_update_file', function(event){
+  $(document).on('load', '#tricks_file', function(event){
     $(this).value(event.target.files[0].name);
   })
   $(document).on('change', '.custom-file-input', function(event){
     $(this).next('.custom-file-label').html(event.target.files[0].name);
   })
-  $(document).on('change', '#tricks_update_file', function(event){
+  $(document).on('change', '#tricks_file', function(event){
     $('#mainImage').hide();
     scrollTo( $('#titre'));
   })
@@ -205,11 +203,12 @@ function barrHiddenTricks(min,max){
   /* --------------------------------------------------------------------------------- */
 
   function displayCounter() {
-    const countCategory = +$("#tricks_update_category option:selected").length;
+    const countCategory = +$("#tricks_category option:selected").length;
+    console.log(+$("#tricks_category option:selected").length);
     if (countCategory >= 3) {
-      $("#tricks_update_category ").find('option:not(:selected)').hide();
+      $("#tricks_category ").find('option:not(:selected)').hide();
     } else {
-      $("#tricks_update_category").find('option:not(:selected)').show();;
+      $("#tricks_category").find('option:not(:selected)').show();
     }
     if (countCategory) {
       const progress = countCategory * 33.33
@@ -224,7 +223,7 @@ function barrHiddenTricks(min,max){
     }
 
 
-    const countImage = +$("#tricks_update_media div.form-group").length;
+    const countImage = +$("#tricks_media div.form-group").length;
     if (countImage >= 4) {
       $("#add-image").hide();
     } else {
@@ -244,7 +243,7 @@ function barrHiddenTricks(min,max){
       $("#barImage").css({'width': 0,})
     }
 
-    const countVideo = +$("#tricks_update_videos div.form-group").length;
+    const countVideo = +$("#tricks_videos div.form-group").length;
     if (countVideo >= 4) {
       $("#add-video").hide();
     } else {
@@ -267,23 +266,23 @@ function barrHiddenTricks(min,max){
   }
 
 
-  $("#tricks_update_category").click(function () {
+  $("#tricks_category").click(function () {
     const index = +$("#category-counter").val();
     $("#category-counter").val(index + 1);
     displayCounter();
   });
 
   function updateCounterCategory() {
-    const count = +$("#tricks_update_category option:selected").length;
+    const count = +$("#tricks_category option:selected").length;
     $("#category-counter").val(count);
   }
   function updateCounterImage() {
-    const count = +$("#tricks_update_media div.form-group").length;
+    const count = +$("#tricks_media div.form-group").length;
     $("#image-counter").val(count);
   }
 
   function updateCounterVideo() {
-    const count = +$("#tricks_update_videos div.form-group").length;
+    const count = +$("#tricks_videos div.form-group").length;
     $("#video-counter").val(count);
   }
 
@@ -299,16 +298,16 @@ function barrHiddenTricks(min,max){
 
   $("#add-image").click(function () {
     const index = +$("#image-counter").val();
-    const tmpl = $("#tricks_update_media").data("prototype").replace(/__name__/g, index);
-    $("#tricks_update_media").append(tmpl);
+    const tmpl = $("#tricks_media").data("prototype").replace(/__name__/g, index);
+    $("#tricks_media").append(tmpl);
     $("#image-counter").val(index + 1);
     handleDeleteButtons();
     displayCounter();
   });
   $("#add-video").click(function () {
     const index = +$("#video-counter").val();
-    const tmpl = $("#tricks_update_videos").data("prototype").replace(/__name__/g, index);
-    $("#tricks_update_videos").append(tmpl);
+    const tmpl = $("#tricks_videos").data("prototype").replace(/__name__/g, index);
+    $("#tricks_videos").append(tmpl);
     $("#video-counter").val(index + 1);
     handleDeleteButtons();
     displayCounter();
@@ -319,5 +318,26 @@ function barrHiddenTricks(min,max){
   updateCounterVideo();
   updateCounterImage();
   handleDeleteButtons();
+  //--------------------------------------------------------------------
+  // CONFIRMATION DE SUPRESSION D'UN COMMENTAIRE
+  //-------------------------------------------------------------------
+  $('.confSupCom').on('click', function(event){
+    const titre = $(this).attr('data-value');
+    return(confirm('"'+titre+'", Voulez-vous réellement supprimer ce commentaire ?'));
+  });
+  //--------------------------------------------------------------------
+  // CONFIRMATION DE SUPRESSION D'UN TRICKS
+  //-------------------------------------------------------------------
+  $('.confSupTrick').on('click', function(event){
+    const titre = $(this).attr('data-value');
+    return(confirm('"'+titre+'", Voulez-vous réellement supprimer ce Tricks?'));
+  });
+//--------------------------------------------------------------------
+  // CONFIRMATION DE SUPRESSION D'UN UTILISATEUR
+  //-------------------------------------------------------------------
+  $('.confSupUser').on('click', function(event){
+    const titre = $(this).attr('data-value');
+    return(confirm('"'+titre+'", Voulez-vous réellement supprimer ce profil utilisateur?'));
+  });
 
 });

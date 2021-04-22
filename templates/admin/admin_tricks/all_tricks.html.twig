@@ -12,12 +12,12 @@
             {% for trick in tricks %}
                 <div  class="col-xs-12 col-sm-12 col-md-6 col-lg-3 trick">
                     <div class="card card-tricks mb-3  hidden-tricks" style="display:none">
-                        <a  href="{{ path("tricks_show", {'id' : trick.id}) }}" >
+                        <a  href="{{ path("tricks_show", {'slug' : trick.slug}) }}" >
                             <img class="img-fluid card-img-top" style="min-height: 168px" src="/asset/media/main{{ asset(trick.Mainimage) }}" alt="{{ trick.name }}">
                         </a>
                         <div class="card-body">
                             <div class="card-link text-center mb-3">
-                                <a  class="btn btn-outline-primary mt-3 block" href="{{ path("tricks_show", {'id' : trick.id}) }}" >{{ trick.name }}</a>
+                                <a  class="btn btn-outline-primary mt-3 block" href="{{ path("tricks_show", {'slug' : trick.slug}) }}" >{{ trick.name }}</a>
                             </div>
                             <div class="card-link text-center row">
                                 {% for cat in trick.category %}
@@ -30,10 +30,10 @@
                                 {% endfor %}
                             </div>
                             <div class="mt-3 text-center row">
-                                <a class="col m-auto btn-block hoverGris" href="{{ path("tricks_update", {'id' : trick.id}) }}" title="Modifier ce tricks" >
+                                <a class="col m-auto btn-block hoverGris" href="{{ path("tricks_update", {'slug' : trick.slug}) }}" title="Modifier ce tricks" >
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a class="col m-auto  btn-block hoverGris" href="{{ path("tricks_delete", {'id' : trick.id})}}"  title="Supprimer ce tricks">
+                                <a class="col m-auto  btn-block hoverGris confSupTrick" href="{{ path("tricks_delete", {'slug' : trick.slug})}}" data-value="{{ trick.name }}" title="Supprimer ce tricks">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>
                             </div>

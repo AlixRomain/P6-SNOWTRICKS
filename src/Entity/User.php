@@ -4,10 +4,17 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="Cette adresse mail est déjà utilisé"
+ * )
  */
 class User implements UserInterface
 {
@@ -22,6 +29,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Email
      */
     private $email;
 
@@ -80,6 +88,44 @@ class User implements UserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $date_expir_token;
+
+    private $path_directory;
+
+    /**
+     * @return mixed
+     */
+    public function getPathDirectory()
+    {
+        return $this->path_directory;
+    }
+
+    /**
+     * @param mixed $path_directory
+     */
+    public function setPathDirectory($path_directory): void
+    {
+        $this->path_directory = $path_directory;
+    }
+
+    private $file;
+
+    private $old_avatar;
+
+    /**
+     * @return mixed
+     */
+    public function getOldAvatar()
+    {
+        return $this->old_avatar;
+    }
+
+    /**
+     * @param mixed $old_avatar
+     */
+    public function setOldAvatar($old_avatar): void
+    {
+        $this->old_avatar = $old_avatar;
+    }
 
     public function getId(): ?int
     {
@@ -273,5 +319,42 @@ class User implements UserInterface
         $this->date_expir_token = $date_expir_token;
 
         return $this;
+    }
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+    /**
+     * @ORM\PreFlush()
+     */
+    public function handleFile()
+    {
+        if ($this->file === null) {
+            return;
+        }
+        // Delete avatar from the server if update
+        if ($this->id && $this->avatar !== 'avatar.jpg' && file_exists($this->path_directory.$this->old_avatar)) {
+            unlink( $this->path_directory.$this->old_avatar);
+        }
+        // Moving image into the image repository
+        $this->file->move($this->path_directory, $this->avatar);
+    }
+
+    /**
+     * @ORM\PreRemove()
+     */
+    public function handleFileDelete()
+    {
+        // Delete image from the server if delete the trick && if file with this name exist
+        if ($this->id && $this->avatar !== 'avatar.jpg' && file_exists($this->path_directory.$this->old_avatar)) {
+            unlink( $this->path_directory.$this->old_avatar);
+        }
     }
 }

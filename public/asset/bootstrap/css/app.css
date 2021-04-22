@@ -84,7 +84,11 @@
 }
 
 /*---------FIN CSS COMMENTAIRE----------------------------*/
-
+.avatar{
+    width: 200px;
+    border-radius: 50%;
+    border: 8px inset #4f5050;
+}
 .container-90{
     width: 90%;
     margin: auto;

@@ -1,4 +1,4 @@
-{% extends "base.html.twig" %}
+{% extends "admin_base.html.twig" %}
 
 {% block title %}Modification d'un trick{% endblock %}
 
@@ -80,7 +80,7 @@
                     </div>
                 </div>
                 <button type="submit" class="btn btn-success">Modifier ce tricks</button>
-                <a  href="{{ path("tricks_delete", {'id' : form.vars.data.id})}}"  title="Supprimer ce tricks" class="btn btn-danger">Supprimer ce tricks</a>
+                <a  href="{{ path("tricks_delete", {'slug' : form.vars.data.slug})}}"  title="Supprimer ce tricks" class="btn btn-danger">Supprimer ce tricks</a>
             </div>
         </div>
         {{ form_end(form) }}

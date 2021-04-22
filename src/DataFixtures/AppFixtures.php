@@ -65,7 +65,7 @@ class AppFixtures extends Fixture
                 ->setFname($this->faker->firstName($genre=mt_rand(0,1)))
                 ->setRoles($roleUser)
                 ->setRgpd(1)
-                ->setAvatar('asset/media/avatar/profil_'.$this->faker->numberBetween(1,20).'.jpg')
+                ->setAvatar('profil_'.$this->faker->numberBetween(1,20).'.jpg')
                 ->setDateCreate($this->faker->dateTimeThisYear( 'now'))
                 ->setDevise('Mr '.$adherent->getFname().' pour vous servir !')
                 ->setSlug($this->slug->slugify(strtolower($adherent->getFname().$adherent->getLname())))
@@ -116,7 +116,7 @@ class AppFixtures extends Fixture
                   ->setPassword($this->passwordEncoder->encodePassword($adherentAdmin,'toto'))
                   ->setRgpd(1)
                   ->setRoles($roleAdmin)
-                  ->setAvatar('asset/media/avatar/moi.jfif')
+                  ->setAvatar('moi.jfif')
                   ->setDateCreate($this->faker->dateTimeInInterval( '-2 years', 'now'))
                   ->setDevise('Née pour coder')
                   ->setSlug($this->slug->slugify(strtolower($adherentAdmin->getFname().$adherentAdmin->getLname())));

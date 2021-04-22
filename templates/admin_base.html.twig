@@ -16,10 +16,32 @@
     <link href="{{ asset('asset/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
 </head>
 
+</head>
+
 <body>
 
 {% include "layout/nav.html.twig" %}
 {% include "layout/nav_admin.html.twig" %}
+{% for message in app.flashes('error') %}
+    <div class="alert alert-danger alert-dismissible fade show mb-0 container mb-5" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+        <i class="fas fa-times mx-2"></i>
+        <strong>{{ message }}</strong>
+    </div>
+{% endfor %}
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show mb-0 container mb-5" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+        <i class="fa fa-check mx-2"></i>
+        <strong>{{ message }}</strong>
+    </div>
+{% endfor %}
+<!-- End Flash message -->
+
 {% block content %}{% endblock %}
 
 

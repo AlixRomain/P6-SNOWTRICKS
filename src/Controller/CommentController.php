@@ -53,10 +53,11 @@ class CommentController extends AbstractController
     public function update(Comment $comment, Request $request): Response
     {
         $form = $this->createForm(CommentType::class, $comment);
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->flush();
-            $this->addFlash('success', 'Le commentaire a été mis à jour.');
+            $this->addFlash('success', 'Yes! Le commentaire a bien été mis à jour.');
             return $this->redirectToRoute('admin_comment');
         }
         return $this->render('admin/admin_comment/update_comment.html.twig', [
@@ -74,7 +75,7 @@ class CommentController extends AbstractController
     {
         $this->em->remove($comment);
         $this->em->flush();
-        $this->addFlash('success', 'Le commentaire a été supprimé.');
+        $this->addFlash('success', 'Yes! Le commentaire a bien été supprimé de notre base de donnée.');
         return $this->redirectToRoute('user_comment');
     }
 }
