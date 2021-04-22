@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
 
 class UserType extends AbstractType
 {
@@ -19,12 +20,23 @@ class UserType extends AbstractType
         $builder
             ->add('fname', TextType::class, array(
                 'label' => 'Nom d\'utilisateur',
+                'constraints' => new Length([
+                                    'min' => 2,
+                                    'max' => 15
+                                ])
             ))
             ->add('lname', TextType::class, array(
                 'label' => 'Nom d\'utilisateur',
+                'constraints' => new Length([
+                                    'min' => 2,
+                                    'max' => 15
+                                ])
             ))
             ->add('email', EmailType::class, array(
                 'label' => 'Email',
+                'constraints' => new Length([
+                                    'max' => 60
+                                ])
             ))
             ->add('file', FileType::class, array(
                 'label' => false,
