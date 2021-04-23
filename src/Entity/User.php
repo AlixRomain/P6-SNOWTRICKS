@@ -57,7 +57,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $avatar;
+    private $avatar = 'avatar_default.jpg';
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -340,7 +340,7 @@ class User implements UserInterface
             return;
         }
         // Delete avatar from the server if update
-        if ($this->id && $this->avatar !== 'avatar.jpg' && file_exists($this->path_directory.$this->old_avatar)) {
+        if ($this->id && $this->avatar !== 'avatar_default.jpg' && file_exists($this->path_directory.$this->old_avatar)) {
             unlink( $this->path_directory.$this->old_avatar);
         }
         // Moving image into the image repository
