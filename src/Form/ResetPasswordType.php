@@ -29,7 +29,7 @@ class ResetPasswordType extends AbstractType
                 'first_options'  => [
                     'label' => 'Entrer votre nouveau mot de passe',
                     'attr' => [
-                        'placeholder' => 'Mot de passe'],
+                        'placeholder' => 'Nouveau mot de passe'],
                 ],
                 'constraints' => new Regex([
                                                'pattern' =>  '^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$^',

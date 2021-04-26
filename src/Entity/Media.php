@@ -173,7 +173,8 @@ class Media
         }
 
         // If update
-        if ($this->id) {
+        if ($this->id && !empty($this->old_path)) {
+            $this->old_path;
             unlink($this->pathDirectory.$this->old_path);
         }
         // Moving image into the image repository
