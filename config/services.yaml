@@ -6,6 +6,7 @@
 parameters:
     img_main_directory: '%kernel.project_dir%/public/asset/media/main'
     img_directory:      '%kernel.project_dir%/public/asset/media/img'
+    avatar_directory:      '%kernel.project_dir%/public/asset/media/avatar'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -27,6 +28,9 @@ services:
     App\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
+
+    App\config\:
+        resource: 'dataMail.php'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

@@ -6,12 +6,15 @@ use App\Repository\TricksRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TricksRepository::class)
  * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity("slug",
+ *     message="Ce Tricks existe déjà en base de donnée")
  */
 class Tricks
 {
@@ -50,7 +53,8 @@ class Tricks
     private $update_at;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\Uuid
      */
     private $slug;
 
@@ -71,7 +75,7 @@ class Tricks
     private $media;
 
     /**
-     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="tricks", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="tricks", orphanRemoval=true,cascade={"persist","remove"})
      */
     private $comments;
 

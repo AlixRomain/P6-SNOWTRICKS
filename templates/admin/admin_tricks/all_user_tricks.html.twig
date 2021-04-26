@@ -1,0 +1,60 @@
+{% extends 'admin_base.html.twig' %}
+
+{% block title %}Hello HomeController!{% endblock %}
+
+{% block content %}
+    <div class="container mb-5">
+        <h4 class="card-title">Tous vos Tricks</h4>
+        <h6 class="card-subtitle">Historique de tous vos tricks</h6>
+    </div>
+    <div id="mainTricks" class="container">
+        <div class="row" id="tricks-title">
+            {% for trick in tricks %}
+                <div  class="col-xs-12 col-sm-12 col-md-6 col-lg-3 trick">
+                    <div class="card card-tricks mb-3  hidden-tricks" style="display:none">
+                        <a  href="{{ path("tricks_show", {'slug' : trick.slug}) }}" >
+                            <img class="img-fluid card-img-top" style="min-height: 168px" src="/asset/media/main{{ asset(trick.Mainimage) }}" alt="{{ trick.name }}">
+                        </a>
+                        <div class="card-body">
+                            <div class="card-link text-center mb-3">
+                                <a  class="btn btn-outline-primary mt-3 block" href="{{ path("tricks_show", {'slug' : trick.slug}) }}" >{{ trick.name }}</a>
+                            </div>
+                            <div class="card-link text-center row">
+                                {% for cat in trick.category %}
+                                    <div class="{% if app.user %}hoverAuth{% else %} hover {% endif %} ">
+                                     <span class="badge badge-pill badge-warning mr-1">
+                                    {{ cat.name}}
+                                     </span>
+                                        <p class="text-warning mouseHover mouseHoverAuth"><strong>{{ cat.description}}</strong></p>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="mt-3 text-center row">
+                                <a class="col m-auto btn-block hoverGris" href="{{ path("tricks_update", {'slug' : trick.slug}) }}" title="Modifier ce tricks" >
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a class="col m-auto  btn-block hoverGris confSupTrick" href="{{ path("tricks_delete", {'slug' : trick.slug})}}" data-value="{{ trick.name }}" title="Supprimer ce Tricks">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="module_progress_tricks">
+            <div class="progress">
+                <div id="tricksBarr" class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" ></div>
+            </div>
+            <div class="row d-flex justify-content-center">
+                <div class="btn btn-info" id="loadMoreTrick" >+</div>
+                <div class="btn btn-info" id="loadLessTrick" style="display:none" >-</div>
+            </div>
+            <div class="text-right">
+                <a id="up" class="home-link-bottom cursor" title="Aller en haut de la page">
+                    <i class="fas fa-chevron-up fa-3x chevron-up"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

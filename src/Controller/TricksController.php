@@ -3,37 +3,35 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
-use App\Entity\Media;
 use App\Entity\Tricks;
 use App\Form\CommentType;
-use App\Form\TricksUpdateType;
+use App\Form\TricksType;
 use App\Repository\CategoryRepository;
-use App\Repository\MediaRepository;
+use App\Repository\CommentRepository;
 use App\Repository\TricksRepository;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
-use mysql_xdevapi\Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Constraints\Json;
 
 class TricksController extends AbstractController
 {
     private $em;
     private $slugify;
-    private $path_main;
-    private $path_img;
+    private $tricksRepo;
+    private $commentRepo;
 
-    function __construct( EntityManagerInterface $entityManager)
+    function __construct( EntityManagerInterface $entityManager, TricksRepository $tricksRepo, CommentRepository $commentRepo)
     {
         $this->em       = $entityManager;
         $this->slugify  = new Slugify();
+        $this->tricksRepo = $tricksRepo;
+        $this->commentRepo = $commentRepo;
     }
     /**
      * @Route("/snowtricks", name="home")
@@ -43,7 +41,7 @@ class TricksController extends AbstractController
     public function index(TricksRepository $tricksRepo): Response
     {
 
-        $tricks = $tricksRepo->findAll();
+       $tricks =  $this->tricksRepo->findBy([],['created_at'=> 'desc']);
 
         return $this->render('tricks/tricks.html.twig', [
             'tricks' => $tricks,
@@ -51,7 +49,7 @@ class TricksController extends AbstractController
     }
 
     /**
-     * @Route("/snowtricks/{id}", name="tricks_show")
+     * @Route("/snowtricks/{slug}", name="tricks_show")
      * @param                     $trick
      *
      * @param SerializerInterface $serializer
@@ -60,6 +58,7 @@ class TricksController extends AbstractController
      */
     public function show(Tricks $trick, Request $request ): Response
     {
+        $comments = $this->commentRepo->findBy(['tricks' => $trick],['date_create'=>'desc']);
         $comment = new Comment();
         $form = $this->createForm(CommentType::class);
         $form->handleRequest($request);
@@ -68,45 +67,65 @@ class TricksController extends AbstractController
             $comment->setDateCreate(new \DateTime());
             $comment->setAuthor($this->getUser());
             $comment->setTricks($trick);
-
+            $this->addFlash('success', 'Yes! Votre commentaire à bien été pris en compte.');
             $this->em->persist($comment);
             $this->em->flush();
+            return $this->redirectToRoute('tricks_show', ['slug' => $trick->getSlug() ]);
         }
 
         return $this->render('tricks/show.html.twig', [
             'tricks' => $trick,
-            'form'   => $form->createView()
+            'form'   => $form->createView(),
+            'comments'=> $comments
 
         ]);
     }
+
     /**
-     * @Route("/modifier-tricks/{id}", name="tricks_update")
-     * @param                     $id
-     *
-     * @IsGranted("ROLE_USER")
+     * @Route("/modifier-tricks/{slug}", name="tricks_update")
+     * @param Tricks             $trick
+     * @param Request            $request
+     * @param CategoryRepository $repoCat
      *
      * @return Response
+     * @Security(
+     *      "user === trick.getAuthorId() || is_granted('ROLE_ADMIN')",
+     *      message = "Vous n'avez pas les droits pour modifier ce tricks"
+     * )
+     * @IsGranted("ROLE_USER")
+     *
      */
-    public function update($id, Request $request, CategoryRepository $repoCat ): Response
+    public function update(Tricks $trick, Request $request, CategoryRepository $repoCat ): Response
     {
         $categorie = $repoCat->findAll();
-        $tricks = $this->em->getRepository(Tricks::class)->findOneById($id);
-        $main_image = $tricks->getMainImage();
-        $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
+        $slug = $trick->getSlug();
+        $main_image = $trick->getMainImage();
+        $form = $this->createForm(TricksType::class, $trick, array('categorie'=> $categorie));
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /*Gestion en cas d'un slug identique déjà existant en base'*/
+            $newSlug = $this->slugify->slugify(strtolower($trick->getName()));
+            if($slug !== $newSlug){
+                $slugExist = $this->tricksRepo->findOneBy(['slug' => $newSlug]);
+                if($slugExist){
+                    $this->addFlash('error', 'Désolé! Ce tricks est déjà existant en base, veuillez modifier votre titre.');
+                    return $this->redirectToRoute('tricks_update', ['slug'=>$slug]);
+                }else {
+                    $trick->setSlug($this->slugify->slugify(strtolower($trick->getName())));
+                }
+            }
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('file')->getData();
             if(!is_null($main_file)){
                 /*Change path before move file in media directory*/
-                $tricks->setPath($this->getParameter('img_main_directory').'/');
-                $tricks->setOldPath($main_image);
-                $tricks->setMainImage($main_file->getBasename());
+                $trick->setPath($this->getParameter('img_main_directory').'/');
+                $trick->setOldPath($main_image);
+                $trick->setMainImage($main_file->getBasename());
             }
 
             /*Gestion de l'upload des images'*/
-            foreach ($tricks->getMedia() as $image) {
+            foreach ($trick->getMedia() as $image) {
                 if( $image->getFile() !== null) {
                     $image->setType('img');
                     $image->setOldPath( $image->getName());
@@ -118,9 +137,9 @@ class TricksController extends AbstractController
             /*Gestion de l'upload des videos'*/
             $pathRootVideo = 'https://www.youtube.com/embed/';
             $goodPath = [];
-            foreach ($tricks->getVideos() as $video){
+            foreach ($trick->getVideos() as $video){
                 if($video->getpath() !== null) {
-                    $video->setTricks($tricks);
+                    $video->setTricks($trick);
                     $video->setType('video');
                     $video->setName('Une video youtube partenaire de Snowtricks');
                     preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $video->getPath(), $matches);
@@ -128,15 +147,15 @@ class TricksController extends AbstractController
                 }
             }
 
-            $tricks->setUpdateAt(new \Datetime);
+            $trick->setUpdateAt(new \Datetime);
             $this->em->flush();
-            $this->addFlash('success', 'Votre trick a été modifié avec succés !');
-            return $this->redirectToRoute('tricks_show', ['id' => $tricks->getId()]);
+            $this->addFlash('success', 'Yes! Votre tricks a bien été modifié!');
+            return $this->redirectToRoute('user_tricks');
 
         }
 
-        return $this->render('tricks/update.html.twig', [
-            'tricks' => $tricks,
+        return $this->render('admin/admin_tricks/update.html.twig', [
+            'tricks' => $trick,
             'form'=>$form->createView(),
             'errors'=>$form->getErrors()
         ]);
@@ -153,10 +172,18 @@ class TricksController extends AbstractController
         $categorie = $repoCat->findAll();
         $tricks = new Tricks();
         $tricks->setMainImage('default-image.jpg');
-        $form = $this->createForm(TricksUpdateType::class, $tricks, array('categorie'=> $categorie));
+        $form = $this->createForm(TricksType::class, $tricks, array('categorie'=> $categorie));
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /*Gestion en cas d'un slug identique déjà existant en base'*/
+             $slugExist = $this->tricksRepo->findOneBy(['slug' => $this->slugify->slugify(strtolower($tricks->getName()))]);
+             if($slugExist){
+                 $this->addFlash('error', 'Désolé! Ce tricks est déjà existant en base, veuillez modifier votre titre.');
+                 return $this->redirectToRoute('tricks_add');
+             }else{
+                 $tricks->setSlug($this->slugify->slugify(strtolower($tricks->getName())));
+             }
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('file')->getData();
             if(!is_null($main_file) && ($tricks->getPath() !== 'default-image.jpg')){
@@ -186,21 +213,23 @@ class TricksController extends AbstractController
             /*Hydration of tricks with form data*/
             $tricks->setAuthorId($this->getUser());
             $tricks->setCreatedAt(new \DateTime());
-            $tricks->setSlug($this->slugify->slugify(strtolower($tricks->getName())));
             $this->em->persist($tricks);
 
             $this->em->flush();
-            $this->addFlash('success', 'Votre trick a été ajouté avec succés !');
-            return $this->redirectToRoute('home');
+            $this->addFlash('success', 'Yes! Votre tricks a bien été ajouté à la plateforme!');
+            return $this->redirectToRoute('user_tricks');
         }
-        return $this->render('tricks/add.html.twig', [
+        return $this->render('admin/admin_tricks/add.html.twig', [
             'form'=>$form->createView()
         ]);
     }
     /**
-     * @Route("/supprimer-tricks/{id}", name="tricks_delete")
+     * @Route("/supprimer-tricks/{slug}", name="tricks_delete")
      * @param                     $trick
-     *
+     * @Security(
+     *      "user === trick.getAuthorId() || is_granted('ROLE_ADMIN')",
+     *      message = "Vous n'avez pas les droits pour supprimer ce tricks !"
+     * )
      * @IsGranted("ROLE_USER")
      *
      * @return Response
@@ -214,6 +243,40 @@ class TricksController extends AbstractController
          }
         $this->em->remove($trick);
         $this->em->flush();
-        return $this->redirectToRoute('home');
+        $this->addFlash('success', 'Yes! Le tricks a bien été supprimé de notre base de donnée.');
+        return $this->redirectToRoute('user_tricks');
     }
+    /**
+     * Findall user tricks
+     *
+     * @Route("/profile/tricks", name="user_tricks")
+     * @IsGranted( "ROLE_USER")
+     *
+     * @return Response
+     */
+    public function findUserTricks(): Response
+    {
+        $tricks = $this->tricksRepo->findBy(['author_id' => $this->getUser()], ['created_at'=> 'desc']);
+
+        return $this->render('admin/admin_tricks/all_user_tricks.html.twig', [
+            'tricks' => $tricks,
+        ]);
+    }
+
+    /**
+     * Find all tricks
+     *
+     * @Route("/admin/tricks", name="admin_tricks")
+     *
+     * @IsGranted("ROLE_ADMIN")
+     * @return Response
+     */
+    public function findAllTricks(): Response
+    {
+        $tricks = $this->tricksRepo->findAll();
+        return $this->render('admin/admin_tricks/all_tricks.html.twig', [
+            'tricks' => $tricks,
+        ]);
+    }
+
 }

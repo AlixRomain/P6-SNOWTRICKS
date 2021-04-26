@@ -4,10 +4,17 @@ namespace App\Entity;
 
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="Cette adresse mail est déjà utilisé sur la plateforme"
+ * )
  */
 class User implements UserInterface
 {
@@ -22,17 +29,32 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Email
      */
     private $email;
 
     /**
-     * @ORM\Column(type="json")
+     * @ORM\Column(type="string" , length=60)
      */
-    private $roles = [];
+    private $roles = self::ROLE_USER;
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(
+     *      message = "Ce champ est requis !"
+     * )
+     * @Assert\Length(
+     *      min = 8,
+     *      max = 254,
+     *      minMessage = "Votre mot de passe doit contenir au moins 8 caractères.",
+     *      maxMessage = "Votre mot de passe ne peut pas contenir plus que {{ limit }} caractères !"
+     * )
+     * @Assert\Regex(
+     *     pattern = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W)^",
+     *     match = true,
+     *     message = "Le mot de passe doit contenir au moins une minuscule, une majuscule, un chiffre et un caractère spécial !"
+     * )
      */
     private $password;
 
@@ -49,7 +71,7 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $avatar;
+    private $avatar = 'avatar_default.jpg';
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -72,6 +94,27 @@ class User implements UserInterface
     private $rgpd;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $actif = 0 ;
+
+    /**
+     * @return mixed
+     */
+    public function getActif()
+    {
+        return $this->actif;
+    }
+
+    /**
+     * @param mixed $actif
+     */
+    public function setActif($actif): void
+    {
+        $this->actif = $actif;
+    }
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $token;
@@ -80,6 +123,44 @@ class User implements UserInterface
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $date_expir_token;
+
+    private $path_directory;
+
+    /**
+     * @return mixed
+     */
+    public function getPathDirectory()
+    {
+        return $this->path_directory;
+    }
+
+    /**
+     * @param mixed $path_directory
+     */
+    public function setPathDirectory($path_directory): void
+    {
+        $this->path_directory = $path_directory;
+    }
+
+    private $file;
+
+    private $old_avatar;
+
+    /**
+     * @return mixed
+     */
+    public function getOldAvatar()
+    {
+        return $this->old_avatar;
+    }
+
+    /**
+     * @param mixed $old_avatar
+     */
+    public function setOldAvatar($old_avatar): void
+    {
+        $this->old_avatar = $old_avatar;
+    }
 
     public function getId(): ?int
     {
@@ -113,11 +194,16 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
-        return array_unique($roles);
+        return [$this->roles];
+    }
+  /**
+     * @see UserInterface
+     */
+    public function getRole(): string
+    {
+
+        return $this->roles;
     }
 
     public function setRoles(array $roles): self
@@ -268,5 +354,42 @@ class User implements UserInterface
         $this->date_expir_token = $date_expir_token;
 
         return $this;
+    }
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+    /**
+     * @ORM\PreFlush()
+     */
+    public function handleFile()
+    {
+        if ($this->file === null) {
+            return;
+        }
+        // Delete avatar from the server if update
+        if ($this->id && $this->avatar !== 'avatar_default.jpg' && file_exists($this->path_directory.$this->old_avatar)) {
+            unlink( $this->path_directory.$this->old_avatar);
+        }
+        // Moving image into the image repository
+        $this->file->move($this->path_directory, $this->avatar);
+    }
+
+    /**
+     * @ORM\PreRemove()
+     */
+    public function handleFileDelete()
+    {
+        // Delete image from the server if delete the trick && if file with this name exist
+        if ($this->id && $this->avatar !== 'avatar.jpg' && file_exists($this->path_directory.$this->old_avatar)) {
+            unlink( $this->path_directory.$this->old_avatar);
+        }
     }
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="SnowTricks, site communautaire autour des figures de snowboard.
+         Projet 6 de la formation de Développeur d'application PHP/Symfony chez OpenClassrooms">
+    <meta name="author" content="Alix Romain">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+
+    {% block stylesheets %}
+        {#{{ encore_entry_link_tags('app') }}#}
+    {% endblock %}
+    <link rel="stylesheet" href="{{ asset('asset/bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('asset/bootstrap/css/app.css') }}">
+    <link href="{{ asset('asset/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+</head>
+
+</head>
+
+<body>
+
+{% include "layout/nav.html.twig" %}
+{% include "layout/nav_admin.html.twig" %}
+{% for message in app.flashes('error') %}
+    <div class="alert alert-danger alert-dismissible fade show mb-0 container mb-5" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+        <i class="fas fa-times mx-2"></i>
+        <strong>{{ message }}</strong>
+    </div>
+{% endfor %}
+{% for message in app.flashes('success') %}
+    <div class="alert alert-success alert-dismissible fade show mb-0 container mb-5" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">×</span>
+        </button>
+        <i class="fa fa-check mx-2"></i>
+        <strong>{{ message }}</strong>
+    </div>
+{% endfor %}
+<!-- End Flash message -->
+
+{% block content %}{% endblock %}
+
+
+<!-- Bootstrap core JavaScript and Jquerry -->
+<script src="https://kit.fontawesome.com/1ed8546d64.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="{{ asset('asset/bootstrap/js/app.js') }}"></script>
+<script src="{{ asset('asset/bootstrap/js/bootstrap.bundle.js') }}"></script>
+</body>
+
+</html>

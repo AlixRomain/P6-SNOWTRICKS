@@ -65,8 +65,8 @@ class AppFixtures extends Fixture
                 ->setFname($this->faker->firstName($genre=mt_rand(0,1)))
                 ->setRoles($roleUser)
                 ->setRgpd(1)
-                ->setAvatar('asset/media/avatar/profil_'.$this->faker->numberBetween(1,20).'.jpg')
-                ->setDateCreate($this->faker->dateTimeInInterval( '-2 years', 'now'))
+                ->setAvatar('profil_'.$this->faker->numberBetween(1,20).'.jpg')
+                ->setDateCreate($this->faker->dateTimeThisYear( 'now'))
                 ->setDevise('Mr '.$adherent->getFname().' pour vous servir !')
                 ->setSlug($this->slug->slugify(strtolower($adherent->getFname().$adherent->getLname())))
                 ->setEmail($adherent->getFname().'-'.$adherent->getlname().'@snowtrick.com')
@@ -129,13 +129,13 @@ class AppFixtures extends Fixture
 
 
         foreach ($allAdherent as $adherent){
-            for($m = 0; $m < 4; $m++) {
+            for($m = 0; $m < 2; $m++) {
             //Association d'un commentaires  à un tricks---------------------------------------------
             $comment = new Comment();
             $comment->setAuthor($adherent)
                 ->setTricks($alltricks[$this->faker->numberBetween(0,19)])
                 ->setContent($this->faker->realText(100))
-                ->setDateCreate($this->faker->dateTimeInInterval( '-2 years', 'now'));
+                ->setDateCreate($this->faker->dateTimeThisMonth( 'now'));
             $manager->persist($comment);
             }
         }

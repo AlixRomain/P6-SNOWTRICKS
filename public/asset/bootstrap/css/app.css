@@ -1,7 +1,105 @@
+/*-------------DEBUT CSS COMMENTAIRES -----------------------*/
+.trash:hover{
+    color: red!important;
+}
+.card-no-border .card {
+    border: 0px;
+    border-radius: 4px;
+    -webkit-box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.05)
+}
+
+.comment:nth-child(2n + 2) {
+    background: #5c636a;
+    overflow: hidden;
+}
+.comment:hover{
+    background: #4f5050;
+    overflow: hidden;
+}
+.comment:hover  h5{
+   color: #F5F5F5;
+}
+
+.comment-row{
+    width: 100%;
+}
+
+.comment-widgets:hover {
+    background: rgba(0, 0, 0, 0.02);
+    cursor: pointer
+}
+
+.comment-widgets {
+    border-bottom: 1px solid rgba(120, 130, 140, 0.13);
+    padding: 0 15px
+}
+
+.comment-text{
+    text-align: left!important;
+}
+.comment-text:hover {
+    visibility: hidden
+}
+
+.comment-text:hover {
+    visibility: visible
+}
+
+.label {
+    padding: 3px 10px;
+    line-height: 13px;
+    color: #ffffff;
+    font-weight: 400;
+    border-radius: 4px;
+    font-size: 75%
+}
+
+.round img {
+    border-radius: 100%
+}
+
+.label-info {
+    background-color: #1976d2
+}
+
+.label-success {
+    background-color: green
+}
+
+.label-danger {
+    background-color: #ef5350
+}
+
+.action-icons a {
+    padding-left: 7px;
+    vertical-align: middle;
+    color: #99abb4
+}
+
+.action-icons a:hover {
+    color: #F5F5F5;
+}
+
+.mt-100 {
+    margin-top: 50px
+}
+
+.mb-100 {
+    margin-bottom: 50px
+}
+
+/*---------FIN CSS COMMENTAIRE----------------------------*/
+.avatar{
+    width: 200px;
+    border-radius: 50%;
+    border: 8px inset #4f5050;
+}
 .container-90{
     width: 90%;
     margin: auto;
 }
+
 header.masthead .overlay {
     position: absolute;
     top: 0;
@@ -91,7 +189,12 @@ header.masthead .page-heading, header.masthead .site-heading {
     width: 100%;
     min-height: calc(100% - 205px);
 }
-
+.cursor{
+    cursor: pointer;
+}
+#navbarColor03 li>a:hover{
+    color: white!important;
+}
 .hoverShow:hover > .mouseHoverShow{
     display: block;
     background-color: #5c636a;
