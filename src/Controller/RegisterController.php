@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Classe\Mail;
+use App\Entity\PasswordForgot;
 use App\Entity\User;
+use App\Form\ForgetPasswordType;
 use App\Form\RegisterType;
 use App\Repository\UserRepository;
 use App\Service\EmailService;
@@ -63,7 +65,7 @@ class RegisterController extends AbstractController
                 $user->setDateExpirToken(new \DateTime('+30 minutes'));
                 /* Confirmation RGPD*/
                 $user->setRgpd(1);
-                 /* Initializatuin Token*/
+                 /* Initialization Token*/
                 $user->setToken(md5(random_bytes(60)));
                 $user->setSlug($this->slug->slugify(strtolower($user->getFname()."-".$user->getlname())));
                 $this->em->persist($user);
@@ -87,13 +89,12 @@ class RegisterController extends AbstractController
      * @Route("/activation", name="account_confirm")
      *
      * @param Request $request
-     * @param UserRepository $repo
      * @param EntityManagerInterface $manager
      *
      * @return Response
      *
      */
-    public function confirm(Request $request, UserRepository $repo, EntityManagerInterface $manager): ?Response
+    public function confirm(Request $request, EntityManagerInterface $manager): ?Response
     {
        $id      = $request->query->get('id');
        $token   = $request->query->get('token');
@@ -111,5 +112,46 @@ class RegisterController extends AbstractController
            $this->addFlash('error', 'Oups rien à l\'horizon ! Il semblerait que ce lien ne mène à rien, veuillez vous rapprochez du masterWeb ');
        }
         return $this->redirectToRoute('app_login');
+    }
+
+    /**
+     * Forgot password
+     *
+     * @Route("/mot-de-passe-oublier", name="password_forgot")
+     *
+     * @param Request $request
+     *
+     * @return Response
+     *
+     * @throws Exception
+     */
+    public function forgotPassword( Request $request): Response
+    {
+        $PasswordForgot = new PasswordForgot();
+        $form = $this->createForm(ForgetPasswordType::class, $PasswordForgot);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $this->repoUser->findOneBy(['email' =>  $PasswordForgot->getEmail()]);
+            if ($user) {
+                /** @var User $user */
+                $token = md5(random_bytes(60));
+                $user->setToken($token);
+                $user->setDateExpirToken(new \DateTime('+30 minutes'));
+                $this->em->flush();
+                if($this->emailService->sendForgetPassEmail($user, $request)){
+                    $this->redirectToRoute('app_login');
+                };
+                $this->redirectToRoute('register');
+
+            }else{
+                $this->addFlash('error', 'Oups!, L\'email renseignée n\'existe pas en base.');
+            }
+
+            return $this->redirectToRoute('password_forgot');
+        }
+        return $this->render('register/forget-pass.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

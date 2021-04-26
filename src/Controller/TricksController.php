@@ -92,18 +92,18 @@ class TricksController extends AbstractController
      *      "user === trick.getAuthorId() || is_granted('ROLE_ADMIN')",
      *      message = "Vous n'avez pas les droits pour modifier ce tricks"
      * )
-     * @IsGranted("ROLE_USER")
      *
      */
     public function update(Tricks $trick, Request $request, CategoryRepository $repoCat ): Response
     {
         $categorie = $repoCat->findAll();
         $slug = $trick->getSlug();
+        $trick->setSlug('slug-pad-defaut');
         $main_image = $trick->getMainImage();
         $form = $this->createForm(TricksType::class, $trick, array('categorie'=> $categorie));
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()){
             /*Gestion en cas d'un slug identique déjà existant en base'*/
             $newSlug = $this->slugify->slugify(strtolower($trick->getName()));
             if($slug !== $newSlug){

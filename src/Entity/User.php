@@ -362,7 +362,7 @@ class User implements UserInterface
 
     public function setFile(UploadedFile $file = null)
     {
-        $this->file = $file;
+        $this->file= $file;
 
         return $this;
     }
@@ -392,4 +392,6 @@ class User implements UserInterface
             unlink( $this->path_directory.$this->old_avatar);
         }
     }
+
+
 }
