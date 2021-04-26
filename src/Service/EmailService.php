@@ -64,7 +64,7 @@ class EmailService extends AbstractController
     public function sendForgetPassEmail($user , Request $request){
         $body = $this->renderView('emails/reset-password.html.twig', [
             'name' => $user->getfname().' '.$user->getlname(),
-            'link' => $request->server->get('SERVER_NAME').'/reinitialisation-pass?id='.$user->getId().'&token='.$user->getToken()
+            'link' => $request->server->get('SERVER_NAME').'/reinitialisation-du-mot-de-passe?id='.$user->getId().'&token='.$user->getToken()
         ]);
         $this->mail->SetFrom('reset-password@snowtricks.com', 'Snowtricks');
         $this->mail->AddReplyTo("inscription@snowtricks.com","Snowtricks");

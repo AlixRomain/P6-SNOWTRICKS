@@ -2,13 +2,13 @@
 
 {% block content %}
     <div class="m-5">
-        <h2 class="text-center m-auto mb-5">Mot de passe oublié ?</h2>
+        <h2 class="text-center m-auto mb-5">Réinitialisation du mot de passe</h2>
     </div>
 
     <div class="col-lg-6 m-auto mb-100" >
         <div  class="card card-small mb-4">
             <div class="card-header border-bottom">
-                <h6 class="m-0">Entrez votre adresse email pour mettre à jour vos identifiants.</h6>
+                <h6 class="m-0">Veuillez saisir votre adresse amail et un nouveau mot de passe</h6>
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item p-3">
@@ -18,8 +18,11 @@
                             <div class="form-group">
                                 {{ form_row(form.email) }}
                             </div>
+                            <div class="form-group">
+                                {{ form_row(form.password) }}
+                            </div>
                             <div class="form-group text-center">
-                                <button type="submit" class="btn btn-success mt-3">Réinitialiser mon mot de passe</button>
+                                <button type="submit" class="btn btn-success mt-3">Modifier mon mot de passe</button>
                             </div>
                             {{ form_end(form) }}
                         </div>
