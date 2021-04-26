@@ -30,7 +30,7 @@ class AdminController extends AbstractController
         $this->tricksRepo = $tricksRepo;
     }
     /**
-     * @Route("/admin-dashboard", name="home_admin")
+     * @Route("/profile/admin-dashboard", name="home_admin")
      * @IsGranted("ROLE_USER")
      */
     public function dashboard(): Response

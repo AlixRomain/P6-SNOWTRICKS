@@ -250,7 +250,7 @@ class TricksController extends AbstractController
      * Findall user tricks
      *
      * @Route("/profile/tricks", name="user_tricks")
-     * @IsGranted( "ROLE_ADMIN")
+     * @IsGranted( "ROLE_USER")
      *
      * @return Response
      */

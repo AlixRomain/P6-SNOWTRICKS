@@ -43,7 +43,7 @@ class UserController extends AbstractController
      *      "user === user",
      *      message = "Vous n'avez pas les droits pour modifier ce profil !"
      * )
-     * @IsGranted("ROLE_ADMIN")
+     * @IsGranted("ROLE_USER")
      */
     public function updateUser(User $userLogin, Request $request): Response
     {
