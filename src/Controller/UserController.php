@@ -59,8 +59,6 @@ class UserController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            PROUT PROUT PROUT
-            P
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $fileUpload = $form->get('file')->getData();
             $this->upluoadService->uploadMainImage($userLogin, $fileUpload, $this->getParameter('avatar_directory'), $avatar);
