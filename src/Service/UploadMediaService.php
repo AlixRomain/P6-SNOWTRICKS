@@ -60,21 +60,37 @@ class UploadMediaService
     }
 
     /**
-     * @param      $trick
-     * @param      $main_file
-     * @param null $main_image
-     * @param      $directory_pass
+     * @param mixed $object
+     * @param        $main_file
+     * @param string $directory_pass
+     * @param null  $main_image
      *
      * @return mixed
      */
-    public function uploadMainImage($trick, $main_file, $directory_pass, $main_image = null ){
-        if(!is_null($main_file)){
-            /*Change path before move file in media directory*/
-            $trick->setPath($directory_pass.'/');
-            ($main_image !== null)?$trick->setOldPath($main_image): null;
-            $trick->setMainImage($main_file->getBasename());
+    public function uploadMainImage($object, $main_file, $directory_pass, $main_image = null ){
+        // TRICKS main image
+        if (method_exists($object, 'setMainImage')) {
+            if(!is_null($main_file)){
+                /*Change path before move file in media directory*/
+                $object->setPath($directory_pass.'/');
+                if ($main_image !== null && $main_image !== 'default-image.jpg') {
+                    $object->setOldPath($main_image);
+                };
+                $object->setMainImage($main_file->getBasename());
+            }
+        } else {
+            // USER avatar
+            if(!is_null($main_file)){
+                /*Change path before move file in media directory*/
+                $object->setPathDirectory($directory_pass.'/');
+                if ($main_image !== null && $main_image !== 'avatar-default.jpg') {
+                    $object->setOldAvatar($main_image);
+                }
+                $object->setAvatar($main_file->getBasename());
+            }
         }
-        return $trick;
+
+        return $object;
     }
 
 

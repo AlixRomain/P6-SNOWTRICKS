@@ -53,9 +53,8 @@ class TricksController extends AbstractController
 
     /**
      * @Route("/snowtricks/{slug}", name="tricks_show")
-     * @param                     $trick
-     *
-     * @param SerializerInterface $serializer
+     * @param Tricks  $trick
+     * @param Request $request
      *
      * @return Response
      */
@@ -120,7 +119,7 @@ class TricksController extends AbstractController
             }
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('file')->getData();
-            $this->upluoadService->uploadMainImage($trick, $main_file,$this->getParameter('img_main_directory'),$main_image);
+            $this->upluoadService->uploadMainImage($trick, $main_file, $this->getParameter('img_main_directory'), $main_image);
             /*Gestion de l'upload des images'*/
             $this->upluoadService->uploadImageMethod($trick, $this->getParameter('img_directory'));
             /*Gestion de l'upload des video'*/
@@ -217,7 +216,6 @@ class TricksController extends AbstractController
     public function findUserTricks(): Response
     {
         $tricks = $this->tricksRepo->findBy(['author_id' => $this->getUser()], ['created_at'=> 'desc']);
-
         return $this->render('admin/admin_tricks/all_user_tricks.html.twig', [
             'tricks' => $tricks,
         ]);

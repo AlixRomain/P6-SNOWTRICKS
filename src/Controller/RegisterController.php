@@ -11,6 +11,7 @@ use App\Form\RegisterType;
 use App\Form\ResetPasswordType;
 use App\Repository\UserRepository;
 use App\Service\EmailService;
+use App\Service\UploadMediaService;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -27,14 +28,16 @@ class RegisterController extends AbstractController
     private $slug;
     private $repoUser;
     private $encoder;
+    private $upluoadService;
 
-    function __construct( EntityManagerInterface $em, EmailService $emailService, UserRepository $repoUser,UserPasswordEncoderInterface $encoder)
+    function __construct( EntityManagerInterface $em, EmailService $emailService, UserRepository $repoUser,UserPasswordEncoderInterface $encoder,UploadMediaService $upluoadService )
     {
         $this->em = $em;
         $this->slug = new Slugify();
         $this->emailService = $emailService;
         $this->repoUser = $repoUser;
         $this->encoder = $encoder;
+        $this->upluoadService = $upluoadService;
     }
 
 
@@ -56,12 +59,8 @@ class RegisterController extends AbstractController
             $search_email = $this->em->getRepository((User::class))->findOneByEmail($user->getEmail());
             if(!$search_email){
                 /*Set avatar and path directory*/
-                $avatar_file = $form->get('file')->getData();
-                if(!is_null($avatar_file)){
-                    /*Change path before move file in media directory*/
-                    $user->setPathDirectory($this->getParameter('avatar_directory').'/');
-                    $user->setAvatar($avatar_file->getBasename());
-                }
+                $fileUpload = $form->get('file')->getData();
+                $this->upluoadService->uploadMainImage($user, $fileUpload, $this->getParameter('avatar_directory'));
                 /*Crypt the password with encoder*/
                 $user->setPassword($this->encoder->encodePassword($user, $user->getPassword()));
                 /*Programmation  delay of expiration Token and date Create*/
@@ -76,7 +75,7 @@ class RegisterController extends AbstractController
                 $this->em->flush();
 
                 if($this->emailService->sendRegistrationEmail($user, $request)){
-                    $this->redirectToRoute('app_login');
+                   return $this->redirectToRoute('home');
                 };
                 $this->redirectToRoute('register');
             }else{
@@ -110,6 +109,7 @@ class RegisterController extends AbstractController
                    $userExistIsValid->setActif(1);
                    $this->em->flush();
                    $this->addFlash('success', 'Votre compte est validé ! Vous pouvez des à présent vous connectez!');
+                   return $this->redirectToRoute('app_login');
                }
                $this->addFlash('error', 'Temps écoulé ! Nous vous avons envoyé un nouveau lien d\'activation sur votre messagerie '.$userExist->getEmail().'!');
            }
@@ -144,14 +144,11 @@ class RegisterController extends AbstractController
                 $user->setDateExpirToken(new \DateTime('+30 minutes'));
                 $this->em->flush();
                 if($this->emailService->sendForgetPassEmail($user, $request)){
-                    $this->redirectToRoute('app_login');
-                };
-                $this->redirectToRoute('register');
-
+                    return $this->redirectToRoute('app_login');
+                }
             }else{
                 $this->addFlash('error', 'Oups!, L\'email renseignée n\'existe pas en base.');
             }
-
             return $this->redirectToRoute('password_forgot');
         }
         return $this->render('register/forget-pass.html.twig', [

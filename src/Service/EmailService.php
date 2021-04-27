@@ -58,7 +58,7 @@ class EmailService extends AbstractController
      * @param         $user
      * @param Request $request
      *
-     * @return void
+     * @return bool
      * @throws \phpmailerException
      */
     public function sendForgetPassEmail($user , Request $request){
@@ -80,10 +80,10 @@ class EmailService extends AbstractController
         $this->mail->Username = MAIL_USERNAME;
         $this->mail->Password = MAIL_PASSWORD;
         $this->mail->MsgHTML($body);
-
         if($this->mail->Send()){
-            return  $this->addFlash('success','Un e-mail viens de vous être envoyé, vous avez à présent 30 minutes pour réinitialiser votre mot de passe.');
+            return  $this->addFlash('success','Un e-mail viens de vous être envoyé, vous avez à présent 30 minutes pour activer votre compte.');
         }
         return $this->addFlash('error','Oups ! Un problème est survenu lors de l\'envoie de votre email.');
+
     }
 }

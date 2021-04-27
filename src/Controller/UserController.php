@@ -12,9 +12,11 @@ use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\UploadMediaService;
 
 class UserController extends AbstractController
 {
@@ -23,14 +25,16 @@ class UserController extends AbstractController
     private $userRepo;
     private $commentRepo;
     private $tricksRepo;
+    private $upluoadService;
 
-    function __construct( EntityManagerInterface $entityManager, UserRepository $userRepo, CommentRepository $commentRepo,TricksRepository $tricksRepo)
+    function __construct( EntityManagerInterface $entityManager, UserRepository $userRepo, CommentRepository $commentRepo,TricksRepository $tricksRepo, UploadMediaService $upluoadService)
     {
         $this->em       = $entityManager;
         $this->slugify  = new Slugify();
         $this->userRepo = $userRepo;
         $this->commentRepo = $commentRepo;
         $this->tricksRepo = $tricksRepo;
+        $this->upluoadService = $upluoadService;
     }
 
     /**
@@ -47,25 +51,32 @@ class UserController extends AbstractController
      */
     public function updateUser(User $userLogin, Request $request): Response
     {
-       $stat = [];
         $oldMail = $this->getUser()->getUsername();
         $nbTricks = $this->tricksRepo->count(['author_id' => $userLogin->getId()]);
         $nbComments = $this->commentRepo->count(['author' => $userLogin->getId()]);
+        $avatar = $userLogin->getAvatar();
         $form = $this->createForm(UserType::class, $userLogin);
-        $user = $this->userRepo->findById($userLogin->getId());
-        array_push($stat, $nbTricks, $nbComments);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            PROUT PROUT PROUT
+            P
+            /*Gestion de l'upload du main_image' dans la table tricks*/
+            $fileUpload = $form->get('file')->getData();
+            $this->upluoadService->uploadMainImage($userLogin, $fileUpload, $this->getParameter('avatar_directory'), $avatar);
+
             ($oldMail !== $userLogin->getEmail())? $reroute = 'app_logout': $reroute = 'home_admin';
             $this->em->flush();
             $this->addFlash('success', 'Yes! Votre profil utilisateur à bien été modifié en base de donnée.');
+            /*Dont touch*/
+            $userLogin->setFile(null);
             return $this->redirectToRoute($reroute);
         }
+
         return $this->render('admin/admin_user/udpate_user.html.twig', [
-            'user' => $user,
+            'user' => $userLogin,
             'form' => $form->createView(),
-            'stats' => $stat
+            'stats' => array_merge($nbTricks, $nbComments)
         ]);
     }
 
@@ -83,10 +94,11 @@ class UserController extends AbstractController
 
     /**
      * @Route("/supprimer-utilisateur/{id}", name="user_delete")
-     * @param                     $user
-     * @IsGranted("ROLE_ADMIN")
+     * @param User $user
      *
      * @return Response
+     * @IsGranted("ROLE_ADMIN")
+     *
      */
     public function delete(User $user): Response
     {
