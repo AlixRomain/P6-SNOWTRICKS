@@ -7,12 +7,10 @@ use App\Form\UserType;
 use App\Repository\CommentRepository;
 use App\Repository\TricksRepository;
 use App\Repository\UserRepository;
-use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,7 +19,6 @@ use App\Service\UploadMediaService;
 class UserController extends AbstractController
 {
     private $em;
-    private $slugify;
     private $userRepo;
     private $commentRepo;
     private $tricksRepo;
@@ -30,7 +27,6 @@ class UserController extends AbstractController
     function __construct( EntityManagerInterface $entityManager, UserRepository $userRepo, CommentRepository $commentRepo,TricksRepository $tricksRepo, UploadMediaService $upluoadService)
     {
         $this->em       = $entityManager;
-        $this->slugify  = new Slugify();
         $this->userRepo = $userRepo;
         $this->commentRepo = $commentRepo;
         $this->tricksRepo = $tricksRepo;
@@ -51,6 +47,7 @@ class UserController extends AbstractController
      */
     public function updateUser(User $userLogin, Request $request): Response
     {
+        $stats = [];
         $oldMail = $this->getUser()->getUsername();
         $nbTricks = $this->tricksRepo->count(['author_id' => $userLogin->getId()]);
         $nbComments = $this->commentRepo->count(['author' => $userLogin->getId()]);
@@ -70,11 +67,11 @@ class UserController extends AbstractController
             $userLogin->setFile(null);
             return $this->redirectToRoute($reroute);
         }
-
+       array_push($stats,$nbTricks,$nbComments );
         return $this->render('admin/admin_user/udpate_user.html.twig', [
             'user' => $userLogin,
             'form' => $form->createView(),
-            'stats' => array_merge($nbTricks, $nbComments)
+            'stats' => $stats
         ]);
     }
 

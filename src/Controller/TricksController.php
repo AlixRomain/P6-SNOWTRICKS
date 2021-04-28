@@ -18,7 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class TricksController extends AbstractController
 {
@@ -26,7 +25,7 @@ class TricksController extends AbstractController
     private $slugify;
     private $tricksRepo;
     private $commentRepo;
-    private $upluoadService;
+    private $uploadService;
 
     function __construct( EntityManagerInterface $entityManager, TricksRepository $tricksRepo, CommentRepository $commentRepo, UploadMediaService $upluoadService)
     {
@@ -34,7 +33,7 @@ class TricksController extends AbstractController
         $this->slugify  = new Slugify();
         $this->tricksRepo = $tricksRepo;
         $this->commentRepo = $commentRepo;
-        $this->upluoadService = $upluoadService;
+        $this->uploadService = $upluoadService;
     }
     /**
      * @Route("/snowtricks", name="home")
@@ -119,11 +118,11 @@ class TricksController extends AbstractController
             }
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('file')->getData();
-            $this->upluoadService->uploadMainImage($trick, $main_file, $this->getParameter('img_main_directory'), $main_image);
+            $this->uploadService->uploadMainImage($trick, $main_file, $this->getParameter('img_main_directory'), $main_image);
             /*Gestion de l'upload des images'*/
-            $this->upluoadService->uploadImageMethod($trick, $this->getParameter('img_directory'));
+            $this->uploadService->uploadImageMethod($trick, $this->getParameter('img_directory'));
             /*Gestion de l'upload des video'*/
-            $this->upluoadService->uploadVideoMethod($trick);
+            $this->uploadService->uploadVideoMethod($trick);
             $trick->setUpdateAt(new \Datetime);
             $this->em->flush();
             $this->addFlash('success', 'Yes! Votre tricks a bien été modifié!');
@@ -163,11 +162,11 @@ class TricksController extends AbstractController
              }
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('file')->getData();
-            $this->upluoadService->uploadMainImage($trick, $main_file,$this->getParameter('img_main_directory'));
+            $this->uploadService->uploadMainImage($trick, $main_file, $this->getParameter('img_main_directory'));
             /*Gestion de l'upload des images'*/
-            $this->upluoadService->uploadImageMethod($trick, $this->getParameter('img_directory'));
+            $this->uploadService->uploadImageMethod($trick, $this->getParameter('img_directory'));
             /*Gestion de l'upload des video'*/
-            $this->upluoadService->uploadVideoMethod($trick);
+            $this->uploadService->uploadVideoMethod($trick);
             /*Hydration of tricks with form data*/
             $trick->setAuthorId($this->getUser());
             $trick->setCreatedAt(new \DateTime());
@@ -184,14 +183,13 @@ class TricksController extends AbstractController
 
     /**
      * @Route("/supprimer-tricks/{slug}", name="tricks_delete")
-     * @param                     $trick
-     * @Security(
-     *      "user === trick.getAuthorId() || is_granted('ROLE_ADMIN')",
-     *      message = "Vous n'avez pas les droits pour supprimer ce tricks !"
-     * )
-     * @IsGranted("ROLE_USER")
+     * @param Tricks $trick
      *
      * @return Response
+    uploadService
+     *
+     * @IsGranted("ROLE_USER")
+     *
      */
     public function delete(Tricks $trick): Response
     {
