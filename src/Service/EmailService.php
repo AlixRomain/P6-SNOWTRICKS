@@ -17,7 +17,7 @@ class EmailService extends AbstractController
     public function __construct()
     {
         require_once('PHPMailer/class.phpmailer.php');
-        require_once('../config/dataMail.php');
+        require_once('../config/dataMailLocal.php');
         $this->mail  = new PHPMailer();
     }
 
