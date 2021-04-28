@@ -27,19 +27,23 @@
                                 </p>
                                 {% if stats[0] > 0 or stats[1] > 0  %}
                                     <span class="label label-success mt-3">Actif pour la communauté</span>
+                                    <br>
                                     {% if stats[0] > 0 %}
                                         <p> Tricks publiés : {{ stats[0] }}</p>
                                     {% else %}
                                         <span class="label label-danger">Aucun Tricks publié</span>
+                                        <br>
                                     {% endif %}
 
                                     {% if stats[1] > 0 %}
                                         <p> Commentaires postés : {{ stats[1] }}</p>
                                     {% else %}
                                         <span class="label label-danger">Aucun commentaire publié</span>
+                                        <br>
                                     {% endif %}
                                 {% else %}
                                     <span class="label label-danger">Aucune activité</span>
+                                    <br>
                                 {% endif %}
 
                             </div>

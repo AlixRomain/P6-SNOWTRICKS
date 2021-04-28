@@ -57,10 +57,10 @@ class AppFixtures extends Fixture
          }
         $manager->flush();
         //Création de 20 adhérents
-        $roleUser[]= USER::ROLE_USER;
+        $roleUser = USER::ROLE_USER;
         for($i = 0; $i<20; $i++){
             $adherent = new User();
-            $adherent   ->setLname($this->faker->lastName)
+            $adherent   ->setLname($this->faker->lastName())
                 ->setFname($this->faker->firstName($genre=mt_rand(0,1)))
                 ->setRoles($roleUser)
                 ->setRgpd(1)
@@ -108,14 +108,14 @@ class AppFixtures extends Fixture
         }
 
                  $adherentAdmin = new User();
-                 $roleAdmin[]= USER::ROLE_ADMIN;
+                 $roleAdmin = USER::ROLE_ADMIN;
                  $adherentAdmin      ->setLname("Alix")
-                  ->setFname("Romain")
+                  ->setFname("Open")
                   ->setEmail("toto@toto.com")
-                  ->setPassword($this->passwordEncoder->encodePassword($adherentAdmin,'toto'))
+                  ->setPassword($this->passwordEncoder->encodePassword($adherentAdmin,'OpenClass21!'))
                   ->setRgpd(1)
                   ->setRoles($roleAdmin)
-                  ->setAvatar('moi.jfif')
+                  ->setAvatar('profil_5.jpg')
                   ->setDateCreate($this->faker->dateTimeInInterval( '-2 years', 'now'))
                   ->setDevise('Née pour coder')
                   ->setSlug($this->slug->slugify(strtolower($adherentAdmin->getFname().$adherentAdmin->getLname())));
