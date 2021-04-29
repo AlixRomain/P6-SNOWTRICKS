@@ -1,4 +1,73 @@
-#Description du besoin
+#Snowtricks | Description du besoin
+
+
+Project 6 of [PHP/Symfony](https://github.com/AlixRomain) course for [OpenClassrooms](https://openclassrooms.com/)
+
+## Build with
+
+- Symfony 5
+- Bootstrap 4
+
+## Installation
+
+__1 - Git clone the project__
+
+```
+git clone https://github.com/AlixRomain/P6-SNOWTRICKS
+``` 
+
+__2 - Create snowtricks DB and modify the .env file__
+
+Go to [http://localhost:8080/](http://localhost:8080/)
+
+```
+User : root
+Password: 
+```
+Create DB named snow-P6 and modify the .env file.
+
+__3 - Composer install__
+
+Run this command, for download many library :
+
+```
+composer install
+```
+__4 - Fixtures Load__
+
+Run this command, for insert many fixtures in your DB :
+
+```
+symfony console doctrine:fixtures:load
+```
+__5 - Setting your dataMail__
+
+Modify with your datas the dataMailLocal.php
+
+
+__6 - Server - start__
+
+Run this command, for start your server :
+
+```
+symfony server:start
+```
+
+__7 - Go to [http://127.0.0.1:8000/snowtricks](http://localhost/), all is ready !__
+
+## Usage
+
+
+
+Admin account :
+
+```
+Pseudo : toto@toto.com
+Password : OpenClass21!
+```
+
+##Context
+
 ###1- Vous êtes chargé de développer le site répondant aux besoins de Jimmy. Vous devez ainsi implémenter les fonctionnalités suivantes : 
 
 un annuaire des figures de snowboard. Vous pouvez vous inspirer de la liste des figures sur Wikipédia. Contentez-vous d'intégrer 10 figures, le reste sera saisi par les internautes ;

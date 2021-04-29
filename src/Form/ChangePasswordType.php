@@ -11,6 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class ChangePasswordType extends AbstractType
 {
@@ -32,12 +34,17 @@ class ChangePasswordType extends AbstractType
                 'first_options'  => [
                     'label' => 'Entrer votre nouveau mot de passe',
                     'attr' => [
-                        'placeholder' => 'Mot de passe'],
+                        'placeholder' => 'Nouveau mot de passe'],
                 ],
+                'constraints' => new Regex([
+                    'pattern' =>  '^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$^',
+                    'match' => true,
+                    'message'=> "Votre mot de passe doit comporter au moins huit caractères, dont des lettres majuscules et minuscules, un chiffre et un symbole."
+                                           ]),
                 'second_options' => [
                     'label' => 'Vueillez confirmer votre nouveau mot de passe',
                     'attr' => [
-                        'placeholder' => 'Confirmation de votre  nouveau mot de passe'],
+                        'placeholder' => 'Confirmation de votre  nouveau mot de passe']
                 ],
             ])
         ;

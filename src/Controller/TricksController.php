@@ -9,6 +9,7 @@ use App\Form\TricksType;
 use App\Repository\CategoryRepository;
 use App\Repository\CommentRepository;
 use App\Repository\TricksRepository;
+use App\Service\UploadMediaService;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -17,7 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class TricksController extends AbstractController
 {
@@ -25,13 +25,15 @@ class TricksController extends AbstractController
     private $slugify;
     private $tricksRepo;
     private $commentRepo;
+    private $uploadService;
 
-    function __construct( EntityManagerInterface $entityManager, TricksRepository $tricksRepo, CommentRepository $commentRepo)
+    function __construct( EntityManagerInterface $entityManager, TricksRepository $tricksRepo, CommentRepository $commentRepo, UploadMediaService $upluoadService)
     {
         $this->em       = $entityManager;
         $this->slugify  = new Slugify();
         $this->tricksRepo = $tricksRepo;
         $this->commentRepo = $commentRepo;
+        $this->uploadService = $upluoadService;
     }
     /**
      * @Route("/snowtricks", name="home")
@@ -50,9 +52,8 @@ class TricksController extends AbstractController
 
     /**
      * @Route("/snowtricks/{slug}", name="tricks_show")
-     * @param                     $trick
-     *
-     * @param SerializerInterface $serializer
+     * @param Tricks  $trick
+     * @param Request $request
      *
      * @return Response
      */
@@ -92,18 +93,17 @@ class TricksController extends AbstractController
      *      "user === trick.getAuthorId() || is_granted('ROLE_ADMIN')",
      *      message = "Vous n'avez pas les droits pour modifier ce tricks"
      * )
-     * @IsGranted("ROLE_USER")
      *
      */
     public function update(Tricks $trick, Request $request, CategoryRepository $repoCat ): Response
     {
         $categorie = $repoCat->findAll();
         $slug = $trick->getSlug();
+       /* $trick->setSlug('slug-par-defaut');*/
         $main_image = $trick->getMainImage();
         $form = $this->createForm(TricksType::class, $trick, array('categorie'=> $categorie));
-
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()){
             /*Gestion en cas d'un slug identique déjà existant en base'*/
             $newSlug = $this->slugify->slugify(strtolower($trick->getName()));
             if($slug !== $newSlug){
@@ -114,39 +114,15 @@ class TricksController extends AbstractController
                 }else {
                     $trick->setSlug($this->slugify->slugify(strtolower($trick->getName())));
                 }
+
             }
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('file')->getData();
-            if(!is_null($main_file)){
-                /*Change path before move file in media directory*/
-                $trick->setPath($this->getParameter('img_main_directory').'/');
-                $trick->setOldPath($main_image);
-                $trick->setMainImage($main_file->getBasename());
-            }
-
+            $this->uploadService->uploadMainImage($trick, $main_file, $this->getParameter('img_main_directory'), $main_image);
             /*Gestion de l'upload des images'*/
-            foreach ($trick->getMedia() as $image) {
-                if( $image->getFile() !== null) {
-                    $image->setType('img');
-                    $image->setOldPath( $image->getName());
-                    $image->setPath(substr($image->getFile(), 14, 26));
-                    $image->setPathDirectory($this->getParameter('img_directory') . '/');
-                    $image->setName($image->getPath());
-                }
-            }
-            /*Gestion de l'upload des videos'*/
-            $pathRootVideo = 'https://www.youtube.com/embed/';
-            $goodPath = [];
-            foreach ($trick->getVideos() as $video){
-                if($video->getpath() !== null) {
-                    $video->setTricks($trick);
-                    $video->setType('video');
-                    $video->setName('Une video youtube partenaire de Snowtricks');
-                    preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $video->getPath(), $matches);
-                    $video->setPath($pathRootVideo . $matches[1]);
-                }
-            }
-
+            $this->uploadService->uploadImageMethod($trick, $this->getParameter('img_directory'));
+            /*Gestion de l'upload des video'*/
+            $this->uploadService->uploadVideoMethod($trick);
             $trick->setUpdateAt(new \Datetime);
             $this->em->flush();
             $this->addFlash('success', 'Yes! Votre tricks a bien été modifié!');
@@ -170,50 +146,31 @@ class TricksController extends AbstractController
     public function add( Request $request, CategoryRepository $repoCat ): Response
     {
         $categorie = $repoCat->findAll();
-        $tricks = new Tricks();
-        $tricks->setMainImage('default-image.jpg');
-        $form = $this->createForm(TricksType::class, $tricks, array('categorie'=> $categorie));
+        $trick = new Tricks();
+        $trick->setMainImage('default-image.jpg');
+        $form = $this->createForm(TricksType::class, $trick, array('categorie'=> $categorie));
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /*Gestion en cas d'un slug identique déjà existant en base'*/
-             $slugExist = $this->tricksRepo->findOneBy(['slug' => $this->slugify->slugify(strtolower($tricks->getName()))]);
+             $slugExist = $this->tricksRepo->findOneBy(['slug' => $this->slugify->slugify(strtolower($trick->getName()))]);
              if($slugExist){
                  $this->addFlash('error', 'Désolé! Ce tricks est déjà existant en base, veuillez modifier votre titre.');
                  return $this->redirectToRoute('tricks_add');
              }else{
-                 $tricks->setSlug($this->slugify->slugify(strtolower($tricks->getName())));
+                 $trick->setSlug($this->slugify->slugify(strtolower($trick->getName())));
              }
             /*Gestion de l'upload du main_image' dans la table tricks*/
             $main_file = $form->get('file')->getData();
-            if(!is_null($main_file) && ($tricks->getPath() !== 'default-image.jpg')){
-                /*Change path before move file in media directory*/
-                $tricks->setPath($this->getParameter('img_main_directory').'/');
-                $tricks->setMainImage($main_file->getBasename());
-            }
-
+            $this->uploadService->uploadMainImage($trick, $main_file, $this->getParameter('img_main_directory'));
             /*Gestion de l'upload des images'*/
-            foreach ($tricks->getMedia() as $image) {
-                $image->setType('img');
-                $image->setPath(substr($image->getFile(), 14, 26));
-                $image->setPathDirectory($this->getParameter('img_directory').'/');
-                $image->setName($image->getPath());
-            }
-
-            /*Gestion de l'upload des videos'*/
-            $pathRootVideo = 'https://www.youtube.com/embed/';
-            $goodPath = [];
-            foreach ($tricks->getVideos() as $video){
-                $video->setTricks($tricks);
-                $video->setType('video');
-                $video->setName('Une video youtube partenaire de Snowtricks');
-                preg_match("/^(?:http(?:s)?:\/\/)?(?:www\.)?(?:m\.)?(?:youtu\.be\/|youtube\.com\/(?:(?:watch)?\?(?:.*&)?v(?:i)?=|(?:embed|v|vi|user)\/))([^\?&\"'>]+)/", $video->getPath(), $matches);
-                $video->setPath($pathRootVideo . $matches[1]);
-            }
+            $this->uploadService->uploadImageMethod($trick, $this->getParameter('img_directory'));
+            /*Gestion de l'upload des video'*/
+            $this->uploadService->uploadVideoMethod($trick);
             /*Hydration of tricks with form data*/
-            $tricks->setAuthorId($this->getUser());
-            $tricks->setCreatedAt(new \DateTime());
-            $this->em->persist($tricks);
+            $trick->setAuthorId($this->getUser());
+            $trick->setCreatedAt(new \DateTime());
+            $this->em->persist($trick);
 
             $this->em->flush();
             $this->addFlash('success', 'Yes! Votre tricks a bien été ajouté à la plateforme!');
@@ -223,16 +180,16 @@ class TricksController extends AbstractController
             'form'=>$form->createView()
         ]);
     }
+
     /**
      * @Route("/supprimer-tricks/{slug}", name="tricks_delete")
-     * @param                     $trick
-     * @Security(
-     *      "user === trick.getAuthorId() || is_granted('ROLE_ADMIN')",
-     *      message = "Vous n'avez pas les droits pour supprimer ce tricks !"
-     * )
-     * @IsGranted("ROLE_USER")
+     * @param Tricks $trick
      *
      * @return Response
+    uploadService
+     *
+     * @IsGranted("ROLE_USER")
+     *
      */
     public function delete(Tricks $trick): Response
     {
@@ -257,7 +214,6 @@ class TricksController extends AbstractController
     public function findUserTricks(): Response
     {
         $tricks = $this->tricksRepo->findBy(['author_id' => $this->getUser()], ['created_at'=> 'desc']);
-
         return $this->render('admin/admin_tricks/all_user_tricks.html.twig', [
             'tricks' => $tricks,
         ]);

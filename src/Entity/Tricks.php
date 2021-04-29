@@ -54,7 +54,6 @@ class Tricks
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
-     * @Assert\Uuid
      */
     private $slug;
 
@@ -371,7 +370,7 @@ class Tricks
     public function handleFileDelete()
     {
         // Delete image from the server if delete the trick && if file with this name exist
-        if ($this->id && $this->main_image !== 'default-image.jpg' && file_exists($this->path.$this->old_path)) {
+        if ($this->id && ($this->main_image !== 'default-image.jpg') && file_exists($this->path.$this->old_path)) {
             unlink( $this->path.$this->old_path);
         }
     }

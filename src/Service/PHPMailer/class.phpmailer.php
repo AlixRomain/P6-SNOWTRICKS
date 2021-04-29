@@ -1606,7 +1606,7 @@ class PHPMailer {
     } elseif ($this->sign_key_file) {
       try {
         $file = tempnam('', 'mail');
-        file_put_contents($file, $body); //TODO check this worked
+        file_put_contents($file, $body);
         $signed = tempnam("", "signed");
         if (@openssl_pkcs7_sign($file, $signed, "file://".$this->sign_cert_file, array("file://".$this->sign_key_file, $this->sign_key_pass), NULL)) {
           @unlink($file);
@@ -2624,7 +2624,6 @@ class PHPMailer {
   * NOTE: will not work with arrays, there are no arrays to set/reset
    * @throws phpmailerException
    * @return bool
-  * @todo Should this not be using __set() magic function?
   */
   public function set($name, $value = '') {
     try {
