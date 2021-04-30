@@ -106,7 +106,6 @@ class AppFixtures extends Fixture
                 $manager->persist($video);
             }
         }
-
                  $adherentAdmin = new User();
                  $roleAdmin = USER::ROLE_ADMIN;
                  $adherentAdmin      ->setLname("Alix")
@@ -120,7 +119,6 @@ class AppFixtures extends Fixture
                   ->setDevise('Née pour coder')
                   ->setSlug($this->slug->slugify(strtolower($adherentAdmin->getFname().$adherentAdmin->getLname())));
               $manager->persist($adherentAdmin);
-
               $manager->flush();
 
         $allAdherent = $this->repoUser->findAll();

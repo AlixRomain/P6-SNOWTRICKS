@@ -36,7 +36,7 @@ class TricksController extends AbstractController
         $this->uploadService = $upluoadService;
     }
     /**
-     * @Route("/snowtricks", name="home")
+     * @Route("/", name="home")
      * @param TricksRepository $tricksRepo
      * @return Response
      */
