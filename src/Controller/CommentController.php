@@ -51,7 +51,7 @@ class CommentController extends AbstractController
      * @Route("/profile/modifier-un-commentaire/{id}", name="update_comment")
      * @IsGranted("ROLE_USER")
      * @Security(
-     *      "user === comment.Author() || is_granted('ROLE_ADMIN')",
+     *      "user === comment.getAuthor() || is_granted('ROLE_ADMIN')",
      *      message = "Vous n'avez pas les droits pour modifier ce commentaire !"
      * )
      * @param Comment $comment

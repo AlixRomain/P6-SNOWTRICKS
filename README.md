@@ -16,7 +16,15 @@ __1 - Git clone the project__
 git clone https://github.com/AlixRomain/P6-SNOWTRICKS
 ``` 
 
-__2 - Create snowtricks DB and modify the .env file__
+__2 - Composer install__
+
+Run this command, for download many library :
+
+```
+composer install
+```
+
+__3 - Create snowtricks DB and modify the .env file__
 
 Go to [http://localhost:8080/](http://localhost:8080/)
 
@@ -26,26 +34,31 @@ Password:
 ```
 Create DB named snow-P6 and modify the .env file.
 
-__3 - Composer install__
+__4 - Initialiser la base de donnée__
 
-Run this command, for download many library :
+2 méthodes :
+
+Soit utiliser le fichier .sql dans le dossier public et l'importer dans votre SGBD
+Soit utiliser les migrations de doctrine et les fixtures
+
 
 ```
-composer install
+php bin/console doctrine:migrations:migrate 
 ```
-__4 - Fixtures Load__
+
+__5 - Fixtures Load__
 
 Run this command, for insert many fixtures in your DB :
 
 ```
 symfony console doctrine:fixtures:load
 ```
-__5 - Setting your dataMail__
+__6 - Setting your dataMail__
 
 Modify with your datas the dataMailLocal.php
 
 
-__6 - Server - start__
+__7 - Server - start__
 
 Run this command, for start your server :
 
@@ -53,7 +66,7 @@ Run this command, for start your server :
 symfony server:start
 ```
 
-__7 - Go to [http://127.0.0.1:8000/snowtricks](http://localhost/), all is ready !__
+__8 - Go to [http://127.0.0.1:8000/snowtricks](http://localhost/), all is ready !__
 
 ## Usage
 
