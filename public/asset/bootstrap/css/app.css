@@ -210,11 +210,26 @@ header.masthead .page-heading, header.masthead .site-heading {
     min-height: 315px;
 }
 
-#seeMedia{display: none;
+#seeMedia, #avatar_dashboard_mobile{
+    display: none;
 }
+
 
 /* Gestion des vues formats mobiles */
 @media (max-width: 576px) {
+
+    #avatar_dashboard_mobile {
+        display: block;
+    }
+    #avatar_dashboard_mobile > #mainImage{
+        display: block;
+        width: 60px;
+        border-radius: 50%;
+        border: 2px inset #4f5050;
+    }
+    #dashboard_nav_admin{
+        display: none;
+    }
     .mediaSize{
         width: 100%;
         min-height: unset;

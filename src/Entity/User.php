@@ -58,6 +58,14 @@ class User implements UserInterface
      * )
      */
     private $password;
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="author", orphanRemoval=true,cascade={"persist","remove"})
+     */
+    private $comments;
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="author_id", orphanRemoval=true,cascade={"persist","remove"})
+     */
+    private $tricks;
 
     /**
      * @ORM\Column(type="string", length=100)
