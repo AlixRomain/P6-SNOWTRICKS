@@ -42,6 +42,7 @@ if (version_compare(PHP_VERSION, '5.0.0', '<') ) exit("Sorry, this version of PH
  */
 class PHPMailer {
 
+
   /////////////////////////////////////////////////
   // PROPERTIES, PUBLIC
   /////////////////////////////////////////////////
@@ -530,12 +531,14 @@ class PHPMailer {
     }
   }
 
+  private $request;
   /**
    * Constructor
    * @param boolean $exceptions Should we throw external exceptions?
    */
-  public function __construct($exceptions = false) {
+  public function __construct($exceptions = false, \Symfony\Component\HttpFoundation\Request $request) {
     $this->exceptions = ($exceptions == true);
+    $this->request = $request;
   }
 
   /**
@@ -2401,8 +2404,8 @@ class PHPMailer {
   protected function ServerHostname() {
     if (!empty($this->Hostname)) {
       $result = $this->Hostname;
-    } elseif (isset($_SERVER['SERVER_NAME'])) {
-      $result = $_SERVER['SERVER_NAME'];
+    } elseif ($this->request->getHost() !== null) {
+      $result = $this->request->getHost();
     } else {
       $result = 'localhost.localdomain';
     }
