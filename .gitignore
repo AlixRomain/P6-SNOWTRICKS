@@ -17,3 +17,5 @@
 .idea/
 
 config/dataMail.php
+
+src/Service/class.phpmailer.php
