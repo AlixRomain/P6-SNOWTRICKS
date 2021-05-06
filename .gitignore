@@ -18,4 +18,6 @@
 
 config/dataMail.php
 
-src/Service/class.phpmailer.php
+src/Service/PHPMailer/class.phpmailer.php
+src/Service/PHPMailer/class.pop3.php
+src/Service/PHPMailer/class.smtp.php
